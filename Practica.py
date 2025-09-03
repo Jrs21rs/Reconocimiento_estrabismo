@@ -4,9 +4,9 @@ from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.optimizers import Adam
 
-# Configuración de directorios
-train_dir = 'C:/Users/Crest/OneDrive/Documents/Practica/dataset/train'  # Cambia la ruta a tu carpeta de entrenamiento
-valid_dir = 'C:/Users/Crest/OneDrive/Documents/Practica/dataset/validation'  # Cambia la ruta a tu carpeta de validación
+
+train_dir = 'C:/Users/Sala_/Documents/dataset/train'  
+valid_dir = 'C:/Users/Sala_/Documents/dataset/validation'  
 
 
 # Preprocesamiento de imágenes con ImageDataGenerator
