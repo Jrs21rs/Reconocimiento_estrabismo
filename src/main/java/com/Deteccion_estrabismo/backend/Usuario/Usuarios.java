@@ -1,6 +1,5 @@
 package com.Deteccion_estrabismo.backend.Usuario;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -8,8 +7,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "Pacientes") // nombre de la coleccion de mongodb
-public class Pacientes {
+@Document(collection = "Usuarios") // nombre de la coleccion de mongodb
+public class Usuarios {
     @Id
     private String id; //  Mongo crea  un ObjectID automaticamente
 
@@ -19,7 +18,7 @@ public class Pacientes {
     private String correo;
     private String password; // se cifra con Bcrypt
     private String numeroTele;
-    private String rol;
+    private String rol; // Pacientes, medicos o administradores
     // --- Getters ---
     public String getId() {
         return id;

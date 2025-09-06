@@ -1,10 +1,10 @@
 package com.Deteccion_estrabismo.backend.Repository;
-import com.Deteccion_estrabismo.backend.Usuario.Pacientes;
+import com.Deteccion_estrabismo.backend.Usuario.Usuarios;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 
 
-public interface PacientesRepository extends MongoRepository<Pacientes,Integer> {
+public interface UsuariosRepository extends MongoRepository<Usuarios,Integer> {
 
-    Optional<Pacientes> findBycorreo(String correo);
+    Optional<Usuarios> findBycorreo(String correo);
 }
