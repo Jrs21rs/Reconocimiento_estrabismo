@@ -144,11 +144,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.11.0</version> <!-- Usa una versión estable y moderna -->
 				<configuration>
+					<release>21</release> <!-- para que compile en Java 21 -->
 					<annotationProcessorPaths>
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
+							<version>1.18.34</version> <!-- 👈 asegura que uses la versión -->
 						</path>
 					</annotationProcessorPaths>
 				</configuration>

@@ -16,27 +16,38 @@ import org.springframework.http.HttpHeaders;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException, java.io.IOException {
-        final String token =getTokenFromRequest(request);
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, java.io.IOException {
 
-            if(token==null) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-        filterChain.doFilter(request,response);
+        String path = request.getServletPath();
+
+        // ⛔ Saltar validación para endpoints públicos
+        if (path.startsWith("/auth/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        final String token = getTokenFromRequest(request);
+
+        if (token == null) {
+            // No hay token y la ruta no es pública → 403 o pasar según tu config
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
+        // Aquí en el futuro puedes validar el token con jwtService
+        filterChain.doFilter(request, response);
     }
 
-    private String getTokenFromRequest(HttpServletRequest request){
-        final String authHeader=request.getHeader(HttpHeaders.AUTHORIZATION);
+    private String getTokenFromRequest(HttpServletRequest request) {
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if(StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer "))
-        {
-            return  authHeader.substring(7);
-
+        if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
         }
         return null;
     }
-
-
 }
+

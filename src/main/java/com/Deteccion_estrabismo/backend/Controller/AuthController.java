@@ -1,7 +1,11 @@
 package com.Deteccion_estrabismo.backend.Controller;
 
 
+import com.Deteccion_estrabismo.backend.Dto.AuthResponse;
+import com.Deteccion_estrabismo.backend.Dto.LoginRequest;
+import com.Deteccion_estrabismo.backend.Dto.RegisterRequest;
 import com.Deteccion_estrabismo.backend.Repository.UsuariosRepository;
+import com.Deteccion_estrabismo.backend.Service.AuthService;
 import com.Deteccion_estrabismo.backend.Service.UsuariosService;
 import com.Deteccion_estrabismo.backend.Usuario.Usuarios;
 import lombok.RequiredArgsConstructor;
@@ -22,17 +26,20 @@ public class AuthController {
     private UsuariosRepository usuariosRepository;
     @Autowired
     private UsuariosService usuariosService;
+    @Autowired
+    private AuthService authService;
 
-    @PostMapping("/login")
+    @PostMapping(value = "/login", produces = "application/json")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request){
-    return ResponseEntity.ok(new AuthResponse());
+        //Se valida el usuario y se genera el token
+        return ResponseEntity.ok(authService.Login(request));
 
     }
 
 
-    @PostMapping("/registro")
-    public ResponseEntity<Usuarios> RegistrarUsuarios(@RequestBody Usuarios usuarios){
-        Usuarios nuevoUsuario = usuariosService.registrarUsuarios(usuarios);
-        return ResponseEntity.ok(nuevoUsuario);
+    @PostMapping(value = "/registro", produces = "application/json")
+    public ResponseEntity<AuthResponse> register( @RequestBody RegisterRequest request){
+
+        return ResponseEntity.ok(authService.register(request));
     }
 }

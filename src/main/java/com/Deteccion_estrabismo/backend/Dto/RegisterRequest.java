@@ -1,24 +1,15 @@
-package com.Deteccion_estrabismo.backend.Usuario;
+package com.Deteccion_estrabismo.backend.Dto;
+
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
-
-
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "Usuarios") // nombre de la coleccion de mongodb
-@Data
-public class Usuarios {
-    @Id
-    private String id; //  Mongo crea  un ObjectID automaticamente
+public class RegisterRequest {
 
     private String nombres;
     private String apellidos;
@@ -26,12 +17,8 @@ public class Usuarios {
     private String correo;
     private String password; // se cifra con Bcrypt
     private String numeroTele;
-    private Rol rol; // Pacientes, medicos o administradores
-    // --- Getters ---
-    public String getId() {
-        return id;
-    }
-
+    private String rol; // P
+    // Getters
     public String getNombres() {
         return nombres;
     }
@@ -48,25 +35,19 @@ public class Usuarios {
         return correo;
     }
 
-
     public String getPassword() {
         return password;
     }
-
 
     public String getNumeroTele() {
         return numeroTele;
     }
 
-    public Rol getrol() {
+    public String getRol() {
         return rol;
     }
 
-    // --- Setters ---
-    public void setId(String id) {
-        this.id = id;
-    }
-
+    // Setters
     public void setNombres(String nombres) {
         this.nombres = nombres;
     }
@@ -92,10 +73,9 @@ public class Usuarios {
     }
 
     public void setRol(String rol) {
-        this.rol = Rol.valueOf(rol);
-    }
-
-    public String getUsername() {
-       return correo;
+        this.rol = rol;
     }
 }
+
+
+
