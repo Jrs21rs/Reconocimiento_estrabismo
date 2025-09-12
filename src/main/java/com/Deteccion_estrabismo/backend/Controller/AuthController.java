@@ -7,14 +7,10 @@ import com.Deteccion_estrabismo.backend.Dto.RegisterRequest;
 import com.Deteccion_estrabismo.backend.Repository.UsuariosRepository;
 import com.Deteccion_estrabismo.backend.Service.AuthService;
 import com.Deteccion_estrabismo.backend.Service.UsuariosService;
-import com.Deteccion_estrabismo.backend.Usuario.Usuarios;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -37,9 +33,13 @@ public class AuthController {
     }
 
 
-    @PostMapping(value = "/registro", produces = "application/json")
-    public ResponseEntity<AuthResponse> register( @RequestBody RegisterRequest request){
-
+    @PostMapping("/register")
+    public  ResponseEntity<String> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
+    }
+
+    @GetMapping("/confirm")
+    public AuthResponse confirm(@RequestParam String token) {
+        return authService.confirmToken(token);
     }
 }

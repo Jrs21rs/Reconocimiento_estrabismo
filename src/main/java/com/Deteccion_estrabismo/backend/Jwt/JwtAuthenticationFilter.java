@@ -23,7 +23,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
 
-        // ⛔ Saltar validación para endpoints públicos
+        //  Saltar validación para endpoints públicos
         if (path.startsWith("/auth/")) {
             filterChain.doFilter(request, response);
             return;

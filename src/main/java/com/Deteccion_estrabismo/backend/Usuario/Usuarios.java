@@ -27,6 +27,9 @@ public class Usuarios {
     private String password; // se cifra con Bcrypt
     private String numeroTele;
     private Rol rol; // Pacientes, medicos o administradores
+    private boolean enabled; //  para activar/desactivar usuario
+
+
     // --- Getters ---
     public String getId() {
         return id;

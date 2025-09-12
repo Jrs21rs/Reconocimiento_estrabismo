@@ -3,7 +3,9 @@ package com.Deteccion_estrabismo.backend.Service;
 import com.Deteccion_estrabismo.backend.Dto.AuthResponse;
 import com.Deteccion_estrabismo.backend.Dto.LoginRequest;
 import com.Deteccion_estrabismo.backend.Dto.RegisterRequest;
+import com.Deteccion_estrabismo.backend.Repository.ConfirmationTokenRepository;
 import com.Deteccion_estrabismo.backend.Repository.UsuariosRepository;
+import com.Deteccion_estrabismo.backend.Usuario.ConfirmationToken;
 import com.Deteccion_estrabismo.backend.Usuario.Usuarios;
 import com.google.rpc.context.AttributeContext;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -26,8 +32,13 @@ public class AuthService {
     private  BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     @Autowired
     private  JwtService jwtService;
+
+    @Autowired
+    private ConfirmationTokenRepository tokenRepository;
     @Autowired
     private  AuthenticationManager authenticationManager;
+    @Autowired
+    private EmailService emailService;
     private static final Logger log = LoggerFactory.getLogger(AuthService.class);
 
     public AuthResponse Login(LoginRequest request) {
@@ -54,8 +65,27 @@ public class AuthService {
     return response;
 
     }
-    public AuthResponse register(RegisterRequest request) {
-        // Crear usuario nuevo
+    public AuthResponse confirmToken(String token) {
+        ConfirmationToken confirmationToken = tokenRepository.findByToken(token)
+                .orElseThrow(() -> new IllegalStateException("Token inválido"));
+
+        if (confirmationToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException("Token expirado");
+        }
+
+        Usuarios usuario = usuariosRepository.findById(confirmationToken.getUsuarioId())
+                .orElseThrow(() -> new IllegalStateException("Usuario no encontrado"));
+
+        usuario.setEnabled(true);
+        usuariosRepository.save(usuario);
+
+        // 🚨 Ahora sí generamos JWT
+        String jwt = jwtService.generateToken(usuario);
+
+        return new AuthResponse(jwt, usuario.getrol().name(), usuario.getCorreo());
+    }
+    public String register(RegisterRequest request) {
+        // 1. Crear usuario nuevo con enabled=false
         Usuarios usuario = new Usuarios();
         usuario.setNombres(request.getNombres());
         usuario.setApellidos(request.getApellidos());
@@ -64,21 +94,32 @@ public class AuthService {
         usuario.setPassword(passwordEncoder.encode(request.getPassword())); // cifrar
         usuario.setNumeroTele(request.getNumeroTele());
         usuario.setRol(request.getRol());
+        usuario.setEnabled(false); // 🚨 Usuario aún no activado
 
         usuariosRepository.save(usuario);
 
+        // 2. Generar token de confirmación (UUID)
+        String confirmationToken = UUID.randomUUID().toString();
 
-        // Generar token para que inicie sesión automáticamente
-        String token = jwtService.generateToken(usuario);
+        ConfirmationToken tokenEntity = ConfirmationToken.builder()
+                .token(confirmationToken)
+                .createdAt(LocalDateTime.now())
+                .expiresAt(LocalDateTime.now().plusHours(24)) // expira en 24h
+                .usuarioId(usuario.getId())
+                .build();
 
+        tokenRepository.save(tokenEntity);
 
-        // 🔹 Agregar log de depuración
-        log.info("Usuario registrado: {} con rol: {} => Token generado: {}",
-                usuario.getCorreo(), usuario.getrol(), token);
+        // 3. Enviar correo con link de confirmación
+        String link = "http://localhost:8080/api/auth/confirm?token=" + confirmationToken;
+        emailService.enviarCorreo(
+                usuario.getCorreo(),
+                "Confirma tu cuenta",
+                "Hola " + usuario.getNombres() + ",\n\nPor favor confirma tu cuenta haciendo clic en este enlace:\n" + link
+        );
 
-        AuthResponse response = new AuthResponse(token, usuario.getrol().name(), usuario.getCorreo());
-
-        return response;
+        // 4. Devolver mensaje de aviso (NO JWT todavía)
+        return "Usuario registrado. Revisa tu correo para confirmar la cuenta.";
     }
 
 
