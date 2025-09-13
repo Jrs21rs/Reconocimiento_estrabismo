@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -47,10 +48,8 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(
                         request.getCorreo(),
                         request.getPassword()
-                )
-
-
-        );
+                ));
+        
 
         //buscar usuario en mogo
         Usuarios usuarios = usuariosRepository.findBycorreo(request.getCorreo())
@@ -94,7 +93,7 @@ public class AuthService {
         usuario.setPassword(passwordEncoder.encode(request.getPassword())); // cifrar
         usuario.setNumeroTele(request.getNumeroTele());
         usuario.setRol(request.getRol());
-        usuario.setEnabled(false); // 🚨 Usuario aún no activado
+        usuario.setEnabled(true); // 🚨 Usuario aún no activado
 
         usuariosRepository.save(usuario);
 
@@ -110,16 +109,16 @@ public class AuthService {
 
         tokenRepository.save(tokenEntity);
 
-        // 3. Enviar correo con link de confirmación
+        /* 3. Enviar correo con link de confirmación
         String link = "http://localhost:8080/api/auth/confirm?token=" + confirmationToken;
         emailService.enviarCorreo(
                 usuario.getCorreo(),
                 "Confirma tu cuenta",
                 "Hola " + usuario.getNombres() + ",\n\nPor favor confirma tu cuenta haciendo clic en este enlace:\n" + link
-        );
+        );*/ 
 
         // 4. Devolver mensaje de aviso (NO JWT todavía)
-        return "Usuario registrado. Revisa tu correo para confirmar la cuenta.";
+        return ResponseEntity.ok(tokenEntity.getToken()).getBody();
     }
 
 

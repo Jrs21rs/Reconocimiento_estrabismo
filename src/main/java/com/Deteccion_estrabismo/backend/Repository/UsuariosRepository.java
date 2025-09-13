@@ -4,7 +4,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 
 
-public interface UsuariosRepository extends MongoRepository<Usuarios,Integer> {
+public interface UsuariosRepository extends MongoRepository<Usuarios,String> {
 
     Optional<Usuarios> findBycorreo(String correo);
 
