@@ -3,9 +3,11 @@ package com.Deteccion_estrabismo.backend.Service;
 import com.Deteccion_estrabismo.backend.Dto.AuthResponse;
 import com.Deteccion_estrabismo.backend.Dto.LoginRequest;
 import com.Deteccion_estrabismo.backend.Dto.RegisterRequest;
+import com.Deteccion_estrabismo.backend.Dto.RegisterResponse;
 import com.Deteccion_estrabismo.backend.Repository.ConfirmationTokenRepository;
 import com.Deteccion_estrabismo.backend.Repository.UsuariosRepository;
 import com.Deteccion_estrabismo.backend.Usuario.ConfirmationToken;
+import com.Deteccion_estrabismo.backend.Usuario.Rol;
 import com.Deteccion_estrabismo.backend.Usuario.Usuarios;
 import com.google.rpc.context.AttributeContext;
 import lombok.RequiredArgsConstructor;
@@ -83,42 +85,44 @@ public class AuthService {
 
         return new AuthResponse(jwt, usuario.getrol().name(), usuario.getCorreo());
     }
-    public String register(RegisterRequest request) {
-        // 1. Crear usuario nuevo con enabled=false
-        Usuarios usuario = new Usuarios();
-        usuario.setNombres(request.getNombres());
-        usuario.setApellidos(request.getApellidos());
-        usuario.setEdad(request.getEdad());
-        usuario.setCorreo(request.getCorreo());
-        usuario.setPassword(passwordEncoder.encode(request.getPassword())); // cifrar
-        usuario.setNumeroTele(request.getNumeroTele());
-        usuario.setRol(request.getRol());
-        usuario.setEnabled(true); // 🚨 Usuario aún no activado
+    public RegisterResponse register(RegisterRequest request) {
+        try {
+            // 1. Crear usuario nuevo con enabled=false
+            Usuarios usuario = new Usuarios();
+            usuario.setNombres(request.getNombres());
+            usuario.setApellidos(request.getApellidos());
+            usuario.setEdad(request.getEdad());
+            usuario.setCorreo(request.getCorreo());
+            usuario.setPassword(passwordEncoder.encode(request.getPassword())); // cifrar
+            usuario.setNumeroTele(request.getNumeroTele());
+            usuario.setRol(Rol.PACIENTE.name());
+            usuario.setEnabled(true);
 
-        usuariosRepository.save(usuario);
+            Usuarios usuarioGuardado = usuariosRepository.save(usuario);
 
-        // 2. Generar token de confirmación (UUID)
-        String confirmationToken = UUID.randomUUID().toString();
+            // 2. Generar token de confirmación (UUID)
+            String confirmationToken = UUID.randomUUID().toString();
 
-        ConfirmationToken tokenEntity = ConfirmationToken.builder()
-                .token(confirmationToken)
-                .createdAt(LocalDateTime.now())
-                .expiresAt(LocalDateTime.now().plusHours(24)) // expira en 24h
-                .usuarioId(usuario.getId())
-                .build();
+            ConfirmationToken tokenEntity = ConfirmationToken.builder()
+                    .token(confirmationToken)
+                    .createdAt(LocalDateTime.now())
+                    .expiresAt(LocalDateTime.now().plusHours(24))
+                    .usuarioId(usuarioGuardado.getId())
+                    .build();
 
-        tokenRepository.save(tokenEntity);
+            tokenRepository.save(tokenEntity);
 
-        /* 3. Enviar correo con link de confirmación
-        String link = "http://localhost:8080/api/auth/confirm?token=" + confirmationToken;
-        emailService.enviarCorreo(
-                usuario.getCorreo(),
-                "Confirma tu cuenta",
-                "Hola " + usuario.getNombres() + ",\n\nPor favor confirma tu cuenta haciendo clic en este enlace:\n" + link
-        );*/ 
-
-        // 4. Devolver mensaje de aviso (NO JWT todavía)
-        return ResponseEntity.ok(tokenEntity.getToken()).getBody();
+            return RegisterResponse.builder()
+                    .success(true)
+                    .error(null)
+                    .build();
+                    
+        } catch (Exception e) {
+            return RegisterResponse.builder()
+                    .success(false)
+                    .error(e.getMessage())
+                    .build();
+        }
     }
 
 
