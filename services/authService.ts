@@ -1,23 +1,54 @@
-const API_URL = 'http://192.168.0.17:8080/auth';
+const API_URL = 'http://192.168.0.19:8080/auth';
 
 interface LoginResponse {
   token?: string;
   error?: string;
+  success?: boolean;
 }
 
 export const loginUser = async (correo: string, password: string): Promise<LoginResponse> => {
   try {
-    const response = await fetch(`${API_URL}/login`, {
+    const url = `${API_URL}/login`;
+    console.log('Intentando conectar a:', url);
+    console.log('Datos de inicio de sesión:', { correo });
+
+    // Verificar primero si el servidor está accesible
+    try {
+      console.log('Verificando disponibilidad del servidor...');
+      const checkResponse = await fetch(API_URL, { 
+        method: 'HEAD',
+        headers: {
+          'Accept': '*/*',
+          'Connection': 'keep-alive'
+        }
+      });
+      console.log('Respuesta de verificación:', checkResponse.status);
+    } catch (checkError) {
+      console.error('Error al verificar el servidor:', checkError);
+      return { error: 'No se puede acceder al servidor. Verifica tu conexión y la dirección IP.' };
+    }
+
+    console.log('Enviando petición de login...');
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Connection': 'keep-alive'
       },
       body: JSON.stringify({ correo, password }),
     });
     
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.log('Error respuesta servidor:', response.status, errorData);
+      return { error: `Error del servidor: ${response.status} ${errorData.message || ''}` };
+    }
+    
     const data = await response.json();
     return data;
   } catch (error) {
-    return { error: 'Error de conexión' };
+    console.log('Error de conexión:', error);
+    return { error: `Error de conexión: ${error instanceof Error ? error.message : 'Error desconocido'}` };
   }
 };

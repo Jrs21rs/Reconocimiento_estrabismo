@@ -1,25 +1,48 @@
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { useState } from "react";
 import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { useAuth } from "../../services/authContext";
 import { loginUser } from "../../services/authService";
 
 export default function LoginScreen() {
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
+  const { login } = useAuth();
 
   const handleLogin = async () => {
     try {
-      const response = await loginUser(correo, password);
-      if (response.error) {
-        Alert.alert("Error", response.error);
+      if (!correo || !password) {
+        Alert.alert("Error", "Por favor ingrese correo y contraseña");
         return;
       }
+
+      const response = await loginUser(correo, password);
+      console.log("Respuesta del servidor:", response);
+
+      if (response.error === "Bad credentials") {
+        Alert.alert(
+          "Error de credenciales",
+          "El correo o la contraseña son incorrectos. Por favor verifica tus datos."
+        );
+        return;
+      }
+
+      if (response.error) {
+        Alert.alert("Error", response.error || "Error en el servidor. Por favor intente nuevamente.");
+        return;
+      }
+
       if (response.token) {
         // Aquí puedes manejar el token, por ejemplo guardarlo en AsyncStorage
-        Alert.alert("Login exitoso", response.token);
+        // Redirigir al usuario a la pantalla de inicio
+        router.replace("/(tabs)");
+        Alert.alert("Login exitoso", "Has iniciado sesión correctamente");
+      } else {
+        Alert.alert("Error", "Respuesta del servidor inválida");
       }
     } catch (error) {
-      Alert.alert("Error", "Ocurrió un error durante el login");
+      console.error("Error en login:", error);
+      Alert.alert("Error", "Ocurrió un error durante el login. Por favor intente nuevamente.");
     }
   };
 
