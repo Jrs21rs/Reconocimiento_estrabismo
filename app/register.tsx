@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link, router } from "expo-router";
 import { useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Modal } from "react-native";
 import { registerUser } from "../services/userService";
 
 export default function RegisterScreen() {
@@ -11,12 +11,19 @@ export default function RegisterScreen() {
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
   const [numeroTele, setNumeroTele] = useState("");
+  const [aceptaTerminos, setAceptaTerminos] = useState(false);
+  const [mostrarTerminos, setMostrarTerminos] = useState(false);
 
   const handleRegister = async () => {
     try {
       // Validar todos los campos
       if (!nombres || !apellidos || !edad || !correo || !password || !numeroTele) {
         Alert.alert("Error", "Por favor complete todos los campos");
+        return;
+      }
+
+      if (!aceptaTerminos) {
+        Alert.alert("Error", "Debe aceptar los términos y condiciones para continuar");
         return;
       }
 
@@ -140,6 +147,23 @@ export default function RegisterScreen() {
             keyboardType="phone-pad"
           />
 
+          <View style={styles.termsContainer}>
+            <TouchableOpacity
+              style={styles.checkbox}
+              onPress={() => setAceptaTerminos(!aceptaTerminos)}
+            >
+              <View style={[
+                styles.checkboxInner,
+                aceptaTerminos && styles.checkboxChecked
+              ]} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setMostrarTerminos(true)}>
+              <Text style={styles.termsText}>
+                Acepto los términos y condiciones
+              </Text>
+            </TouchableOpacity>
+          </View>
+
           <TouchableOpacity style={styles.button} onPress={handleRegister}>
             <Text style={styles.buttonText}>Registrarse</Text>
           </TouchableOpacity>
@@ -151,6 +175,44 @@ export default function RegisterScreen() {
           </Link>
         </View>
       </ScrollView>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={mostrarTerminos}
+        onRequestClose={() => setMostrarTerminos(false)}
+      >
+        <View style={styles.modalContainer}>
+          <ScrollView style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Términos y Condiciones</Text>
+            <Text style={styles.modalText}>
+              De acuerdo con la Ley 1581 de 2012 de Protección de Datos Personales, autorizo expresamente a la aplicación 
+              para la recolección, almacenamiento y uso de mis datos personales con la finalidad de:
+
+              1. Realizar el proceso de registro y autenticación en la aplicación.
+              2. Almacenar y procesar información clínica relacionada con la detección de estrabismo.
+              3. Contactarme para propósitos relacionados con el servicio a través del correo electrónico o número telefónico proporcionado.
+
+              Entiendo que tengo derecho a:
+              - Conocer, actualizar y rectificar mis datos personales
+              - Solicitar prueba de esta autorización
+              - Ser informado sobre el uso que se ha dado a mis datos personales
+              - Presentar quejas ante la Superintendencia de Industria y Comercio
+              - Revocar esta autorización
+              - Acceder gratuitamente a mis datos personales
+
+              La aplicación se compromete a mantener la confidencialidad de los datos y a implementar medidas de seguridad 
+              apropiadas para proteger la información personal.
+            </Text>
+            <TouchableOpacity 
+              style={styles.modalButton} 
+              onPress={() => setMostrarTerminos(false)}
+            >
+              <Text style={styles.modalButtonText}>Cerrar</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </View>
+      </Modal>
     </LinearGradient>
   );
 }
@@ -158,6 +220,73 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  termsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+    paddingHorizontal: 10,
+  },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderWidth: 2,
+    borderColor: '#fff',
+    borderRadius: 4,
+    marginRight: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkboxInner: {
+    width: 14,
+    height: 14,
+    borderRadius: 2,
+  },
+  checkboxChecked: {
+    backgroundColor: '#fff',
+  },
+  termsText: {
+    color: '#fff',
+    fontSize: 14,
+    textDecorationLine: 'underline',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 20,
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    maxHeight: '80%',
+    width: '100%',
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+    color: '#4c669f',
+  },
+  modalText: {
+    fontSize: 16,
+    lineHeight: 24,
+    marginBottom: 20,
+    color: '#333',
+  },
+  modalButton: {
+    backgroundColor: '#4c669f',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   scrollContent: {
     flexGrow: 1,

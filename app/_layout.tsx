@@ -31,7 +31,9 @@ function RootLayoutNav() {
           />
         </>
       ) : (
-        <Stack.Screen name="(tabs)" />
+        <>
+          <Stack.Screen name="(tabs)" />
+        </>
       )}
     </Stack>
   );

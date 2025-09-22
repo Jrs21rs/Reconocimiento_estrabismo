@@ -1,4 +1,5 @@
-import { Stack } from "expo-router";
+import { Ionicons } from '@expo/vector-icons';
+import { Tabs } from "expo-router";
 import { useAuth } from "../../services/authContext";
 
 export default function Layout() {
@@ -9,22 +10,54 @@ export default function Layout() {
   }
 
   return (
-    <Stack>
-      <Stack.Screen 
-        name="home" 
-        options={{ 
+    <Tabs
+      screenOptions={{
+        tabBarStyle: {
+          backgroundColor: '#4c669f',
+        },
+        tabBarActiveTintColor: '#ffffff',
+        tabBarInactiveTintColor: '#b3c1e6',
+        headerStyle: {
+          backgroundColor: '#4c669f',
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+      }}
+    >
+      <Tabs.Screen
+        name="home"
+        options={{
           title: "Inicio",
-          headerShown: true,
-          headerBackVisible: false,
-          headerStyle: {
-            backgroundColor: '#4c669f',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-        }} 
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home" size={size} color={color} />
+          ),
+        }}
       />
-    </Stack>
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Perfil",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="updateProfile"
+        options={{
+          href: null, // Oculta esta pantalla de la barra de tabs
+          title: "Actualizar Perfil",
+        }}
+      />
+      <Tabs.Screen
+        name="clinicalHistory"
+        options={{
+          href: null, // Oculta esta pantalla de la barra de tabs
+          title: "Historial Clínico",
+        }}
+      />
+    </Tabs>
   );
 }
