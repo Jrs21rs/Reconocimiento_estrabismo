@@ -45,26 +45,36 @@ public class AuthService {
     private static final Logger log = LoggerFactory.getLogger(AuthService.class);
 
     public AuthResponse Login(LoginRequest request) {
-        //validar usuarios y password
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getCorreo(),
-                        request.getPassword()
-                ));
-        
+        try {
+            //validar usuarios y password
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getCorreo(),
+                            request.getPassword()
+                    ));
 
-        //buscar usuario en mogo
-        Usuarios usuarios = usuariosRepository.findBycorreo(request.getCorreo())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        //generacion de token
-        String token = jwtService.generateToken(usuarios);
+            //buscar usuario en mongo
+            Usuarios usuarios = usuariosRepository.findBycorreo(request.getCorreo())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            
+            //generacion de token
+            String token = jwtService.generateToken(usuarios);
 
-        // 🔹 Agregar log de depuración
-        log.info("Usuario logueado: {} con rol: {} => Token generado: {}",
-                usuarios.getCorreo(), usuarios.getrol(), token);
-     AuthResponse response = new AuthResponse(token, usuarios.getrol().name(), usuarios.getCorreo());
-    return response;
+            // Log de depuración
+            log.info("Usuario logueado: {} con rol: {} => Token generado: {}",
+                    usuarios.getCorreo(), usuarios.getrol(), token);
 
+            return AuthResponse.builder()
+                    .token(token)
+                    .error(null)
+                    .build();
+
+        } catch (Exception e) {
+            return AuthResponse.builder()
+                    .token(null)
+                    .error(e.getMessage())
+                    .build();
+        }
     }
     public AuthResponse confirmToken(String token) {
         ConfirmationToken confirmationToken = tokenRepository.findByToken(token)
@@ -83,7 +93,7 @@ public class AuthService {
         // 🚨 Ahora sí generamos JWT
         String jwt = jwtService.generateToken(usuario);
 
-        return new AuthResponse(jwt, usuario.getrol().name(), usuario.getCorreo());
+        return new AuthResponse(jwt, null);
     }
     public RegisterResponse register(RegisterRequest request) {
         try {

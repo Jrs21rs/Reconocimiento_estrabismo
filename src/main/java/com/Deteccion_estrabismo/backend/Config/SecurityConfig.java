@@ -1,4 +1,4 @@
-package com.Deteccion_estrabismo.backend.Conifg;
+package com.Deteccion_estrabismo.backend.Config;
 
 import com.Deteccion_estrabismo.backend.Jwt.JwtAuthenticationFilter;
 import com.Deteccion_estrabismo.backend.Service.UsuariosService;
