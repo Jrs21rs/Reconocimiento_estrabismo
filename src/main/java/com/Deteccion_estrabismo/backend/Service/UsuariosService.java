@@ -1,5 +1,6 @@
     package com.Deteccion_estrabismo.backend.Service;
 
+    import com.Deteccion_estrabismo.backend.Repository.ConfirmationTokenRepository;
     import com.Deteccion_estrabismo.backend.Repository.UsuariosRepository;
     import com.Deteccion_estrabismo.backend.Usuario.Usuarios;
     import lombok.RequiredArgsConstructor;
@@ -10,8 +11,12 @@
     @Service
     @RequiredArgsConstructor
     public class UsuariosService {
-        @Autowired
+
         private UsuariosRepository usuariosRepository;
+
+        public UsuariosService (UsuariosRepository usuariosRepository, ConfirmationTokenRepository tokenRepository, EmailService emailService){
+            this.usuariosRepository=usuariosRepository;
+        }
 
         private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 

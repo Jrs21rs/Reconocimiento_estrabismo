@@ -96,37 +96,59 @@ public class AuthService {
         return new AuthResponse(jwt, null);
     }
     public RegisterResponse register(RegisterRequest request) {
+        Usuarios usuario = new Usuarios();
+
         try {
-            // 1. Crear usuario nuevo con enabled=false
-            Usuarios usuario = new Usuarios();
-            usuario.setNombres(request.getNombres());
-            usuario.setApellidos(request.getApellidos());
-            usuario.setEdad(request.getEdad());
-            usuario.setCorreo(request.getCorreo());
-            usuario.setPassword(passwordEncoder.encode(request.getPassword())); // cifrar
-            usuario.setNumeroTele(request.getNumeroTele());
-            usuario.setRol(Rol.PACIENTE.name());
-            usuario.setEnabled(true);
+            if(usuariosRepository.findBycorreo(usuario.getCorreo()).isPresent()){
+                return RegisterResponse.builder()
+                        .success(false)
+                        .error("El correo ya está registrado")
+                        .build();
 
-            Usuarios usuarioGuardado = usuariosRepository.save(usuario);
+            }else{  // 1. Crear usuario nuevo con enabled=false
+                usuario.setNombres(request.getNombres());
+                usuario.setApellidos(request.getApellidos());
+                usuario.setEdad(request.getEdad());
+                usuario.setCorreo(request.getCorreo());
+                usuario.setPassword(passwordEncoder.encode(request.getPassword())); // cifrar
+                usuario.setNumeroTele(request.getNumeroTele());
+                usuario.setRol(String.valueOf(Rol.PACIENTE));
 
-            // 2. Generar token de confirmación (UUID)
-            String confirmationToken = UUID.randomUUID().toString();
+                usuario.setEnabled(false);
 
-            ConfirmationToken tokenEntity = ConfirmationToken.builder()
-                    .token(confirmationToken)
-                    .createdAt(LocalDateTime.now())
-                    .expiresAt(LocalDateTime.now().plusHours(24))
-                    .usuarioId(usuarioGuardado.getId())
-                    .build();
+                Usuarios usuarioGuardado = usuariosRepository.save(usuario);
 
-            tokenRepository.save(tokenEntity);
+                // 2. Generar token de confirmación (UUID)
+                String confirmationToken = UUID.randomUUID().toString();
 
-            return RegisterResponse.builder()
-                    .success(true)
-                    .error(null)
-                    .build();
-                    
+                ConfirmationToken tokenEntity = ConfirmationToken.builder()
+                        .token(confirmationToken)
+                        .createdAt(LocalDateTime.now())
+                        .expiresAt(LocalDateTime.now().plusHours(24))
+                        .usuarioId(usuarioGuardado.getId())
+                        .build();
+
+                tokenRepository.save(tokenEntity);
+                //3. Contruir el link de confirmacion
+                String link = "http://localhost:8080/api/auth/confirm?token=" + confirmationToken;
+
+                //4. enviar correo
+                emailService.enviarCorreo(
+                        usuario.getCorreo(),
+                        "Confirma tu cuenta en Detecteye",
+                        "Bienvenido " + usuario.getNombres() +
+                                ",\n\n DetectEye requiere que confirmes que eres tu para que sea mas seguro para ti " +
+                                "por favor confirma tu cuenta en el siguiente enlace \n"+ link +"\n\n El enlace expirara en 24 horas"
+                );
+
+
+                return RegisterResponse.builder()
+                        .success(true)
+                        .error(null)
+                        .build();}
+
+
+
         } catch (Exception e) {
             return RegisterResponse.builder()
                     .success(false)
