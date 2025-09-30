@@ -1,17 +1,17 @@
 package com.Deteccion_estrabismo.backend.Controller;
 
 
-import com.Deteccion_estrabismo.backend.Dto.AuthResponse;
-import com.Deteccion_estrabismo.backend.Dto.LoginRequest;
-import com.Deteccion_estrabismo.backend.Dto.RegisterRequest;
-import com.Deteccion_estrabismo.backend.Dto.RegisterResponse;
+import com.Deteccion_estrabismo.backend.Dto.*;
 import com.Deteccion_estrabismo.backend.Repository.UsuariosRepository;
 import com.Deteccion_estrabismo.backend.Service.AuthService;
 import com.Deteccion_estrabismo.backend.Service.UsuariosService;
 import com.Deteccion_estrabismo.backend.Usuario.Usuarios;
+import org.springframework.security.core.Authentication;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -40,4 +40,6 @@ public class AuthController {
     public AuthResponse confirm(@RequestParam String token) {
         return authService.confirmToken(token);
     }
+
+
 }

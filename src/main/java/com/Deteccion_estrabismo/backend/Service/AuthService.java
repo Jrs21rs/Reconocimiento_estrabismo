@@ -1,9 +1,6 @@
 package com.Deteccion_estrabismo.backend.Service;
 
-import com.Deteccion_estrabismo.backend.Dto.AuthResponse;
-import com.Deteccion_estrabismo.backend.Dto.LoginRequest;
-import com.Deteccion_estrabismo.backend.Dto.RegisterRequest;
-import com.Deteccion_estrabismo.backend.Dto.RegisterResponse;
+import com.Deteccion_estrabismo.backend.Dto.*;
 import com.Deteccion_estrabismo.backend.Repository.ConfirmationTokenRepository;
 import com.Deteccion_estrabismo.backend.Repository.UsuariosRepository;
 import com.Deteccion_estrabismo.backend.Usuario.ConfirmationToken;
@@ -54,7 +51,7 @@ public class AuthService {
                     ));
 
             //buscar usuario en mongo
-            Usuarios usuarios = usuariosRepository.findBycorreo(request.getCorreo())
+            Usuarios usuarios = usuariosRepository.findByCorreo(request.getCorreo())
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
             
             //generacion de token
@@ -99,7 +96,7 @@ public class AuthService {
         Usuarios usuario = new Usuarios();
 
         try {
-            if(usuariosRepository.findBycorreo(usuario.getCorreo()).isPresent()){
+            if(usuariosRepository.findByCorreo(usuario.getCorreo()).isPresent()){
                 return RegisterResponse.builder()
                         .success(false)
                         .error("El correo ya está registrado")
@@ -112,7 +109,7 @@ public class AuthService {
                 usuario.setCorreo(request.getCorreo());
                 usuario.setPassword(passwordEncoder.encode(request.getPassword())); // cifrar
                 usuario.setNumeroTele(request.getNumeroTele());
-                usuario.setRol(String.valueOf(Rol.PACIENTE));
+                usuario.setRol(Rol.PACIENTE);
 
                 usuario.setEnabled(false);
 
@@ -130,7 +127,7 @@ public class AuthService {
 
                 tokenRepository.save(tokenEntity);
                 //3. Contruir el link de confirmacion
-                String link = "http://localhost:8080/api/auth/confirm?token=" + confirmationToken;
+                String link = "http://localhost:8080/auth/confirm?token=" + confirmationToken;
 
                 //4. enviar correo
                 emailService.enviarCorreo(
@@ -154,6 +151,39 @@ public class AuthService {
                     .success(false)
                     .error(e.getMessage())
                     .build();
+        }
+    }
+
+    public RegisterResponse UpdatePaciente(String correo, UpdateRequest request){
+    try{
+        Usuarios usuario = (usuariosRepository.findByCorreo(correo)
+                .orElseThrow(() -> new RuntimeException(("usuario no encontrado"))));
+        // Actualizar campos si no son nulos
+        // Actualizar campos si son válidos
+        if (request.getNombres() != null && !request.getNombres().isBlank()) {
+            usuario.setNombres(request.getNombres());
+        }
+        if (request.getApellidos() != null && !request.getApellidos().isBlank()) {
+            usuario.setApellidos(request.getApellidos());
+        }
+        if (request.getEdad() != null && request.getEdad() > 0) {
+            usuario.setEdad(request.getEdad());
+        }
+        if (request.getNumeroTele() != null && !request.getNumeroTele().isBlank()) {
+            usuario.setNumeroTele(request.getNumeroTele());
+        }
+
+        usuariosRepository.save(usuario);
+        return RegisterResponse.builder()
+                .success(true)
+                .error(null)
+                .build();
+
+    }catch(Exception e){
+        return RegisterResponse.builder()
+                .success(false)
+                .error(e.getMessage())
+                .build();
         }
     }
 

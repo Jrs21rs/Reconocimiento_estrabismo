@@ -29,36 +29,6 @@ public class Usuarios {
     private String numeroTele;
     private Rol rol; // Pacientes, medicos o administradores
     private boolean enabled;//  para activar/desactivar
-    private boolean isConfirmed;
-    @Field("reset_token")
-    private String resetToken;
-    private String confirmationToken;
-    public String getResetToken() {
-        return resetToken;
-    }
-
-    public void setResetToken(String resetToken) {
-        this.resetToken = resetToken;
-    }
-
-    public String getConfirmationToken() {
-        return confirmationToken;
-    }
-
-    public void setConfirmationToken(String confirmationToken) {
-        this.confirmationToken = confirmationToken;
-    }
-
-
-
-    public boolean isConfirmed() {
-        return isConfirmed;
-    }
-
-    public void setConfirmed(boolean confirmed) {
-        isConfirmed = confirmed;
-    }
-
 
 
 
@@ -127,11 +97,11 @@ public class Usuarios {
         this.numeroTele = numeroTele;
     }
 
-    public void setRol(String rol) {
-        this.rol = Rol.valueOf(rol);
+    public void setRol(Rol rol) {
+        this.rol = rol;
     }
 
     public String getUsername() {
-       return correo;
+       return this.correo;
     }
 }
