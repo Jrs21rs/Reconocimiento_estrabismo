@@ -19,6 +19,7 @@ public class PacientesController {
     private AuthService authService;
     @PutMapping("/Update")
     public ResponseEntity<RegisterResponse> updatePaciente(@RequestBody UpdateRequest request, Authentication authentication){
+        System.out.println("Recibido: " + request);
         if (authentication == null || authentication.getName() == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(RegisterResponse.builder()
@@ -31,7 +32,7 @@ public class PacientesController {
         // Llamamos al servicio, que ya se encarga de buscar la entidad
         RegisterResponse response = authService.UpdatePaciente(correo, request);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(authService.UpdatePaciente(correo,request));
 
     }
 
