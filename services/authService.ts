@@ -1,4 +1,4 @@
-const API_URL = 'http://192.168.0.19:8080/auth';
+const API_URL = 'http://192.168.1.12:8080/auth';
 
 interface LoginResponse {
   token?: string;

@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { updateProfile } from "../../services/updateProfileService";
+import { updateProfile } from "../services/updateProfileService";
 
 export default function UpdateProfileScreen() {
   const [nombres, setNombres] = useState("");
