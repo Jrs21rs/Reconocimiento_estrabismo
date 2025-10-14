@@ -3,25 +3,19 @@ package com.Deteccion_estrabismo.backend.Service;
 import com.Deteccion_estrabismo.backend.Dto.*;
 import com.Deteccion_estrabismo.backend.Repository.ConfirmationTokenRepository;
 import com.Deteccion_estrabismo.backend.Repository.UsuariosRepository;
-import com.Deteccion_estrabismo.backend.Usuario.ConfirmationToken;
-import com.Deteccion_estrabismo.backend.Usuario.Rol;
-import com.Deteccion_estrabismo.backend.Usuario.Usuarios;
-import com.google.rpc.context.AttributeContext;
+import com.Deteccion_estrabismo.backend.Entities.ConfirmationToken;
+import com.Deteccion_estrabismo.backend.Entities.Rol;
+import com.Deteccion_estrabismo.backend.Entities.Usuarios;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
