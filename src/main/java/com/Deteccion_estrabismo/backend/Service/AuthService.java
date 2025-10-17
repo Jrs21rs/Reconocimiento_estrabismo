@@ -53,7 +53,7 @@ public class AuthService {
 
             // Log de depuración
             log.info("Usuario logueado: {} con rol: {} => Token generado: {}",
-                    usuarios.getCorreo(), usuarios.getrol(), token);
+                    usuarios.getCorreo(), usuarios.getRol(), token);
 
             return AuthResponse.builder()
                     .token(token)
@@ -116,7 +116,7 @@ public class AuthService {
                         .token(confirmationToken)
                         .createdAt(LocalDateTime.now())
                         .expiresAt(LocalDateTime.now().plusHours(24))
-                        .usuarioId(usuarioGuardado.getId())
+                        .usuarioId(String.valueOf(usuarioGuardado.getId()))
                         .build();
 
                 tokenRepository.save(tokenEntity);

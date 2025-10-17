@@ -1,100 +1,69 @@
 package com.Deteccion_estrabismo.backend.Entities;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Document(collection = "Usuarios") // nombre de la coleccion de mongodb
+@Entity
+@Table(name = "usuarios") // nombre de la coleccion de mongodb
 @Data
-public class Usuarios {
+@AllArgsConstructor
+@NoArgsConstructor
+public class Usuarios implements UserDetails {
     @Id
-    private String id; //  Mongo crea  un ObjectID automaticamente
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-increment en PostgreSQL
+    private Long id;
+    @Column(nullable = false, length = 100)
     private String nombres;
+    @Column(nullable = false, length = 100)
     private String apellidos;
+    @Column(nullable = false)
     private Integer edad;
+    @Column(nullable = false, unique = true, length = 100)
     private String correo;
+    @Column(nullable = false)
     private String password; // se cifra con Bcrypt
+    @Column(name = "numero_tele", length = 20)
     private String numeroTele;
+    @Enumerated(EnumType.STRING) // para guardar el rol como texto
+    @Column(nullable = false, length = 50)
     private Rol rol; // Pacientes, medicos o administradores
     private boolean enabled;//  para activar/desactivar
 
 
-
-
-    // --- Getters ---
-    public String getId() {
-        return id;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + rol.name()));
     }
 
-    public String getNombres() {
-        return nombres;
-    }
-
-    public String getApellidos() {
-        return apellidos;
-    }
-
-    public Integer getEdad() {
-        return edad;
-    }
-
-    public String getCorreo() {
-        return correo;
-    }
-
-
-    public String getPassword() {
-        return password;
-    }
-
-
-    public String getNumeroTele() {
-        return numeroTele;
-    }
-
-    public Rol getrol() {
-        return rol;
-    }
-
-    // --- Setters ---
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setNombres(String nombres) {
-        this.nombres = nombres;
-    }
-
-    public void setApellidos(String apellidos) {
-        this.apellidos = apellidos;
-    }
-
-    public void setEdad(Integer edad) {
-        this.edad = edad;
-    }
-
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setNumeroTele(String numeroTele) {
-        this.numeroTele = numeroTele;
-    }
-
-    public void setRol(Rol rol) {
-        this.rol = rol;
-    }
-
+    @Override
     public String getUsername() {
-       return this.correo;
+        return this.correo;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return UserDetails.super.isAccountNonExpired();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return UserDetails.super.isAccountNonLocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return UserDetails.super.isCredentialsNonExpired();
     }
 }
