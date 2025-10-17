@@ -16,7 +16,6 @@ import java.util.List;
 public class Medico extends Usuarios{
     @Column(nullable= false, length= 150)
     private String especialidad;
-
     @Column(length=50)
     private String numerolicencia;
     @Column(length=100)

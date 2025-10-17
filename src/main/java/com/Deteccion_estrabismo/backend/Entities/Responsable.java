@@ -17,9 +17,6 @@ public class Responsable extends Usuarios{
     @Column(nullable = false, length = 50)
     private String parentesco; // "Padre", "Madre", "Tío", "Tutor", etc.
 
-    @Column(length = 100)
-    private String direccion; // dirección del hogar
-
     @Column(length = 50)
     private String ocupacion; // trabajo o profesión
 
