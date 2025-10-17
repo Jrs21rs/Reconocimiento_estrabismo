@@ -13,17 +13,12 @@ import lombok.NoArgsConstructor;
 public class RegisterResponse {
     private boolean success;
     private String error;
-    private Long usuarioId;
-    private Long entidadEspecificaId;
-    private Rol rol;
 
-    public static RegisterResponse success(Long usuarioId, Long entidadId, Rol rol) {
+
+    public static RegisterResponse success() {
         return RegisterResponse.builder()
                 .success(true)
                 .error(null)
-                .usuarioId(usuarioId)
-                .entidadEspecificaId(entidadId)
-                .rol(rol)
                 .build();
     }
 
@@ -31,9 +26,6 @@ public class RegisterResponse {
         return RegisterResponse.builder()
                 .success(false)
                 .error(message)
-                .usuarioId(null)
-                .entidadEspecificaId(null)
-                .rol(null)
                 .build();
     }
 }

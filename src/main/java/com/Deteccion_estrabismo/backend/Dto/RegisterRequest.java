@@ -4,12 +4,12 @@ import com.Deteccion_estrabismo.backend.Entities.Rol;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
+@SuperBuilder
 public abstract class RegisterRequest {
 
     private String nombres;

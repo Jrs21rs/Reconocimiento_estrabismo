@@ -8,6 +8,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class RegisterPacienteRequest extends RegisterRequest {
     private String documentoIdentidad; // si aplica (puede ser opcional para menores)
     private String genero; // "Masculino", "Femenino", "Otro"
@@ -17,6 +18,7 @@ public class RegisterPacienteRequest extends RegisterRequest {
     private String resultadoDeteccion; // "Normal", "Estrabismo leve", etc.
     private String tipoEstrabismo; // opcional: exotropía, endotropía, etc.
     private String observaciones; // anotaciones médicas
+    private Long responsableId;
     @Override
     public Rol getRol() {
         return Rol.PACIENTE;

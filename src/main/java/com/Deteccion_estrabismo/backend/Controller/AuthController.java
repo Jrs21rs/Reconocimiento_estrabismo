@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
+
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -23,8 +26,6 @@ public class AuthController {
         return ResponseEntity.ok(authService.Login(request));
 
     }
-
-
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authService.register(request));
@@ -33,6 +34,25 @@ public class AuthController {
     @GetMapping("/confirm")
     public AuthResponse confirm(@RequestParam String token) {
         return authService.confirmToken(token);
+    }
+    @PostMapping("/register/paciente")
+    public ResponseEntity<RegisterResponse> registerPaciente(@RequestBody RegisterPacienteRequest request) {
+        return ResponseEntity.ok(authService.register(request));
+    }
+
+    @PostMapping("/register/medico")
+    public ResponseEntity<RegisterResponse> registerMedico(@RequestBody RegisterMedicoRequest request) {
+        return ResponseEntity.ok(authService.register(request));
+    }
+
+    @PostMapping("/register/responsable")
+    public ResponseEntity<RegisterResponse> registerResponsable(@RequestBody RegisterResponsableRequest request) {
+        return ResponseEntity.ok(authService.register(request));
+    }
+
+    @PostMapping("/register/admin")
+    public ResponseEntity<RegisterResponse> registerAdmin(@RequestBody RegisterAdminRequest request) {
+        return ResponseEntity.ok(authService.register(request));
     }
 
 

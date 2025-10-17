@@ -3,9 +3,11 @@ package com.Deteccion_estrabismo.backend.Entities;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+@EqualsAndHashCode(callSuper = true)
 
 @Entity
 @Table(name="responsables")
