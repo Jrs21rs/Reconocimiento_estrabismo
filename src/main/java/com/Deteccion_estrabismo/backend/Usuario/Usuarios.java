@@ -2,31 +2,35 @@ package com.Deteccion_estrabismo.backend.Usuario;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import jakarta.persistence.*;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
-import java.util.Collection;
-import java.util.List;
 
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "Usuarios") // nombre de la coleccion de mongodb
 @Data
+@EntityScan
+@Table(name = "Usuarios") // nombre de la tabla en la base de datos
 public class Usuarios {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)//auto-increment 
     private String id; //  Mongo crea  un ObjectID automaticamente
 
+    @Column(nullable = false, length = 100)
     private String nombres;
+    @Column(nullable = false, length = 100)
     private String apellidos;
+    @Column(nullable = false)
     private Integer edad;
+    @Column(nullable = false, unique = true, length = 150)
     private String correo;
+    @Column(nullable = false)
     private String password; // se cifra con Bcrypt
+    @Column(nullable = false, length = 15)
     private String numeroTele;
+     @Enumerated(EnumType.STRING) // para guardar el rol como texto
+    @Column(nullable = false, length = 50)
     private Rol rol; // Pacientes, medicos o administradores
     private boolean enabled;//  para activar/desactivar
 

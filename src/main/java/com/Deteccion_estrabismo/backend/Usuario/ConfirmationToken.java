@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import jakarta.persistence.*;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,15 +16,29 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Document(collection = "Confirmacion_Token") // nombre de la coleccion de mongodb
+@Entity
+@Table(name = "confirmation_token") // nombre de la tabla en PostgreSQL
 public class ConfirmationToken{
-    public String getId() {
-        return id;
+   
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)//auto-increment
+    private long id;
+    @Column(nullable = false, unique = true, length = 250)
+    private String token;
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+    @Column(nullable = false)
+    private LocalDateTime expiresAt;
+    @Column(name = "usuario_id", nullable = false)
+    private Long usuarioId;
+
+    public ConfirmationToken(Long usuarioId){
+        this.usuarioId=usuarioId;
+        this.token= UUID.randomUUID().toString();
+        this.createdAt = LocalDateTime.now();
+        this.expiresAt = createdAt.plusMinutes(15);
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getToken() {
         return token;
@@ -50,26 +64,12 @@ public class ConfirmationToken{
         this.expiresAt = expiresAt;
     }
 
-    public String getUsuarioId() {
+    public long getUsuarioId() {
         return usuarioId;
     }
 
-    public void setUsuarioId(String usuarioId) {
+    public void setUsuarioId(long usuarioId) {
         this.usuarioId = usuarioId;
-    }
-
-    @Id
-    private String id;
-    private String token;
-    private LocalDateTime createdAt;
-    private LocalDateTime expiresAt;
-    private String usuarioId;
-
-    public ConfirmationToken(String usuarioId){
-        this.usuarioId=usuarioId;
-        this.token= UUID.randomUUID().toString();
-        this.createdAt = LocalDateTime.now();
-        this.expiresAt = createdAt.plusMinutes(15);
     }
 
 

@@ -154,38 +154,38 @@ public class AuthService {
         }
     }
 
-    public RegisterResponse UpdatePaciente(String correo, UpdateRequest request){
-    try{
-        Usuarios usuario = (usuariosRepository.findByCorreo(correo)
-                .orElseThrow(() -> new RuntimeException(("usuario no encontrado"))));
-        // Actualizar campos si no son nulos
-        // Actualizar campos si son válidos
-        if (request.getNombres() != null && !request.getNombres().isBlank()) {
-            usuario.setNombres(request.getNombres());
-        }
-        if (request.getApellidos() != null && !request.getApellidos().isBlank()) {
-            usuario.setApellidos(request.getApellidos());
-        }
-        if (request.getEdad() != null && request.getEdad() > 0) {
-            usuario.setEdad(request.getEdad());
-        }
-        if (request.getNumeroTele() != null && !request.getNumeroTele().isBlank()) {
-            usuario.setNumeroTele(request.getNumeroTele());
-        }
+        public RegisterResponse UpdatePaciente(String correo, UpdateRequest request){
+        try{
+            Usuarios usuario = (usuariosRepository.findByCorreo(correo)
+                    .orElseThrow(() -> new RuntimeException(("usuario no encontrado"))));
+            // Actualizar campos si no son nulos
+            // Actualizar campos si son válidos
+            if (request.getNombres() != null && !request.getNombres().isBlank()) {
+                usuario.setNombres(request.getNombres());
+            }
+            if (request.getApellidos() != null && !request.getApellidos().isBlank()) {
+                usuario.setApellidos(request.getApellidos());
+            }
+            if (request.getEdad() != null && request.getEdad() > 0) {
+                usuario.setEdad(request.getEdad());
+            }
+            if (request.getNumeroTele() != null && !request.getNumeroTele().isBlank()) {
+                usuario.setNumeroTele(request.getNumeroTele());
+            }
 
-        usuariosRepository.save(usuario);
-        return RegisterResponse.builder()
-                .success(true)
-                .error(null)
-                .build();
+            usuariosRepository.save(usuario);
+            return RegisterResponse.builder()
+                    .success(true)
+                    .error(null)
+                    .build();
 
-    }catch(Exception e){
-        return RegisterResponse.builder()
-                .success(false)
-                .error(e.getMessage())
-                .build();
+        }catch(Exception e){
+            return RegisterResponse.builder()
+                    .success(false)
+                    .error(e.getMessage())
+                    .build();
+            }
         }
-    }
 
 
 
