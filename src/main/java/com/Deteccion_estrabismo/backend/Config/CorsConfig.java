@@ -11,7 +11,7 @@ public class CorsConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:19006",          // frontend web local
-                            "exp://192.168.1.12:8080",        // Expo Go local
+                            "exp://192.168.0.5:8080",        // Expo Go local
                             "http://detecteye.us-east-2.elasticbeanstalk.com" // producción
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
