@@ -2,9 +2,8 @@
 
     import com.Deteccion_estrabismo.backend.Repository.ConfirmationTokenRepository;
     import com.Deteccion_estrabismo.backend.Repository.UsuariosRepository;
-    import com.Deteccion_estrabismo.backend.Usuario.Usuarios;
+    import com.Deteccion_estrabismo.backend.Entities.Usuarios;
     import lombok.RequiredArgsConstructor;
-    import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
     import org.springframework.stereotype.Service;
 

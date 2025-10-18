@@ -2,13 +2,11 @@ package com.Deteccion_estrabismo.backend.Jwt;
 
 import com.Deteccion_estrabismo.backend.Repository.UsuariosRepository;
 import com.Deteccion_estrabismo.backend.Service.JwtService;
-import com.Deteccion_estrabismo.backend.Usuario.Usuarios;
-import io.jsonwebtoken.io.IOException;
+import com.Deteccion_estrabismo.backend.Entities.Usuarios;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -63,7 +61,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(
                             usuario.getCorreo(), null,
-                            List.of(new SimpleGrantedAuthority(usuario.getrol().name()))
+                            List.of(new SimpleGrantedAuthority(usuario.getRol().name()))
                     );
 
             SecurityContextHolder.getContext().setAuthentication(authToken);

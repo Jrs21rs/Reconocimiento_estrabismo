@@ -1,7 +1,7 @@
 package com.Deteccion_estrabismo.backend.Service;
 
 import com.Deteccion_estrabismo.backend.Repository.UsuariosRepository;
-import com.Deteccion_estrabismo.backend.Usuario.Usuarios;
+import com.Deteccion_estrabismo.backend.Entities.Usuarios;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -25,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return User.builder()
                 .username(usuario.getCorreo())
                 .password(usuario.getPassword())
-                .roles(usuario.getrol().name()) // Paciente, Medico, Admin
+                .roles(usuario.getRol().name()) // Paciente, Medico, Admin
                 .build();
     }
 }

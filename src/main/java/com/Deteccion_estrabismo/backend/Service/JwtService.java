@@ -1,6 +1,6 @@
 package com.Deteccion_estrabismo.backend.Service;
 
-import com.Deteccion_estrabismo.backend.Usuario.Usuarios;
+import com.Deteccion_estrabismo.backend.Entities.Usuarios;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
