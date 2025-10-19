@@ -1,4 +1,4 @@
-const API_URL = 'http://reconocimiento-estrabismo-env.eba-qemqhkeh.us-east-2.elasticbeanstalk.com/auth';
+const API_URL = process.env.NEXT_PUBLIC_API_AUTH_URL || '';
 
 interface LoginResponse {
   token?: string;
@@ -15,7 +15,7 @@ export const loginUser = async (correo: string, password: string): Promise<Login
     // Verificar primero si el servidor está accesible
     try {
       console.log('Verificando disponibilidad del servidor...');
-      const checkResponse = await fetch(API_URL, { 
+ const checkResponse = await fetch(process.env.NEXT_PUBLIC_API_AUTH_URL || '', { 
         method: 'HEAD',
         headers: {
           'Accept': '*/*',

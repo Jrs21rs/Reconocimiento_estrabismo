@@ -12,8 +12,7 @@ interface RegisterResponse {
   error?: string;
 }
 
-const API_URL = 'http://reconocimiento-estrabismo-env.eba-qemqhkeh.us-east-2.elasticbeanstalk.com/auth';
-
+const API_URL = process.env.NEXT_PUBLIC_API_AUTH_URL || '';
 
 
 const fetchWithTimeout = async (url: string, options: RequestInit, timeout = 15000) => {  // Aumentado a 15 segundos

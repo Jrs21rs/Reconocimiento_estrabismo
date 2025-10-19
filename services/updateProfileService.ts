@@ -12,8 +12,8 @@ export interface UserData {
 }
 export const updateProfile = async (userData: UserData) => {
     try {
-        const token = await AsyncStorage.getItem("userToken"); //  authContext
-        const response = await fetch("http://reconocimiento-estrabismo-env.eba-qemqhkeh.us-east-2.elasticbeanstalk.com/api/Pacientes/Update", {
+        const token = await AsyncStorage.getItem("userToken");
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_PACIENTES_URL}/Update`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
