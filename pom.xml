@@ -116,9 +116,9 @@
 
 		<!-- Excel -->
 		<dependency>
-    		<groupId>org.apache.poi</groupId>
-    		<artifactId>poi-ooxml</artifactId>
-    		<version>5.2.5</version>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>5.4.1</version>
 		</dependency>
 		<!--Recarga continua para el desarrollo-->
 		<dependency>

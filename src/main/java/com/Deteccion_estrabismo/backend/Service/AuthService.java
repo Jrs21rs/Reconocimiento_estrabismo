@@ -25,21 +25,23 @@ import java.util.UUID;
 @Service
 @Transactional
 public class AuthService {
-    private  UsuariosRepository usuariosRepository;
-    private  BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    private  JwtService jwtService;
+    private UsuariosRepository usuariosRepository;
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private JwtService jwtService;
     private final BuildObjectMapper mapper;
     private final PacientesRepository pacientesRepository;
     private final AdministradorRepository administradorRepository;
     private final MedicoRepository medicoRepository;
     private final ResponsableRepository responsableRepository;
     private ConfirmationTokenRepository tokenRepository;
-    private  AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
     private EmailService emailService;
 
-    public AuthService(AdministradorRepository administradorRepository, BuildObjectMapper mapper, PacientesRepository pacientesRepository, MedicoRepository medicoRepository,
-                       ResponsableRepository responsableRepository, AuthenticationManager authenticationManager, EmailService emailService, JwtService jwtService,
-                       ConfirmationTokenRepository tokenRepository, UsuariosRepository usuariosRepository) {
+    public AuthService(AdministradorRepository administradorRepository, BuildObjectMapper mapper,
+            PacientesRepository pacientesRepository, MedicoRepository medicoRepository,
+            ResponsableRepository responsableRepository, AuthenticationManager authenticationManager,
+            EmailService emailService, JwtService jwtService,
+            ConfirmationTokenRepository tokenRepository, UsuariosRepository usuariosRepository) {
         this.administradorRepository = administradorRepository;
         this.mapper = mapper;
         this.pacientesRepository = pacientesRepository;
@@ -56,18 +58,17 @@ public class AuthService {
 
     public AuthResponse Login(LoginRequest request) {
         try {
-            //validar usuarios y password
+            // validar usuarios y password
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.getCorreo(),
-                            request.getPassword()
-                    ));
+                            request.getPassword()));
 
-            //buscar usuario
+            // buscar usuario
             Usuarios usuarios = usuariosRepository.findByCorreo(request.getCorreo())
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-            
-            //generacion de token
+
+            // generacion de token
             String token = jwtService.generateToken(usuarios);
 
             // Log de depuración
@@ -86,6 +87,7 @@ public class AuthService {
                     .build();
         }
     }
+
     public AuthResponse confirmToken(String token) {
         ConfirmationToken confirmationToken = tokenRepository.findByToken(token)
                 .orElseThrow(() -> new IllegalStateException("Token inválido"));
@@ -94,7 +96,7 @@ public class AuthService {
             throw new IllegalStateException("Token expirado");
         }
 
-        Usuarios usuario = usuariosRepository.findById(confirmationToken.getUsuarioId())
+        Usuarios usuario = usuariosRepository.findById(Long.valueOf(confirmationToken.getUsuarioId()))
                 .orElseThrow(() -> new IllegalStateException("Usuario no encontrado"));
 
         usuario.setEnabled(true);
@@ -105,6 +107,7 @@ public class AuthService {
 
         return new AuthResponse(jwt, null);
     }
+
     @Transactional
     public RegisterResponse register(RegisterRequest request) {
         try {
@@ -134,7 +137,6 @@ public class AuthService {
         }
     }
 
-
     private Pacientes crearPaciente(RegisterPacienteRequest request) {
         Pacientes paciente = mapper.converterTo(request, Pacientes.class);
         paciente.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -150,7 +152,7 @@ public class AuthService {
         return pacientesRepository.save(paciente);
     }
 
-    private Medico crearMedico( RegisterMedicoRequest request) {
+    private Medico crearMedico(RegisterMedicoRequest request) {
         Medico medico = mapper.converterTo(request, Medico.class);
         medico.setPassword(passwordEncoder.encode(request.getPassword()));
         medico.setRol(request.getRol());
@@ -158,12 +160,12 @@ public class AuthService {
         return medicoRepository.save(medico);
     }
 
-    private Responsable crearResponsable( RegisterResponsableRequest request) {
+    private Responsable crearResponsable(RegisterResponsableRequest request) {
         Responsable responsable = mapper.converterTo(request, Responsable.class);
         responsable.setPassword(passwordEncoder.encode(request.getPassword()));
         responsable.setRol(request.getRol());
         responsable.setEnabled(false);
-       return responsableRepository.save(responsable);
+        return responsableRepository.save(responsable);
     }
 
     private Administrador crearAdministrador(RegisterAdminRequest request) {
@@ -171,7 +173,7 @@ public class AuthService {
         administrador.setPassword(passwordEncoder.encode(request.getPassword()));
         administrador.setRol(request.getRol());
         administrador.setEnabled(false);
-       return administradorRepository.save(administrador);
+        return administradorRepository.save(administrador);
     }
 
     private void copiarPropiedadesBase(Usuarios source, Usuarios target) {
@@ -203,8 +205,7 @@ public class AuthService {
         emailService.enviarCorreo(
                 usuario.getCorreo(),
                 "Confirma tu cuenta en Detecteye - " + usuario.getRol(),
-                construirMensajeEmail(usuario, link)
-        );
+                construirMensajeEmail(usuario, link));
     }
 
     private String construirMensajeEmail(Usuarios usuario, String link) {
@@ -220,39 +221,37 @@ public class AuthService {
         } + "\n\nEl enlace expirará en 24 horas";
     }
 
-    public RegisterResponse UpdatePaciente(String correo, UpdateRequest request){
-    try{
-        Usuarios usuario = (usuariosRepository.findByCorreo(correo)
-                .orElseThrow(() -> new RuntimeException(("usuario no encontrado"))));
-        // Actualizar campos si no son nulos
-        // Actualizar campos si son válidos
-        if (request.getNombres() != null && !request.getNombres().isBlank()) {
-            usuario.setNombres(request.getNombres());
-        }
-        if (request.getApellidos() != null && !request.getApellidos().isBlank()) {
-            usuario.setApellidos(request.getApellidos());
-        }
-        if (request.getEdad() != null && request.getEdad() > 0) {
-            usuario.setEdad(request.getEdad());
-        }
-        if (request.getNumeroTele() != null && !request.getNumeroTele().isBlank()) {
-            usuario.setNumeroTele(request.getNumeroTele());
-        }
+    public RegisterResponse UpdatePaciente(String correo, UpdateRequest request) {
+        try {
+            Usuarios usuario = (usuariosRepository.findByCorreo(correo)
+                    .orElseThrow(() -> new RuntimeException(("usuario no encontrado"))));
+            // Actualizar campos si no son nulos
+            // Actualizar campos si son válidos
+            if (request.getNombres() != null && !request.getNombres().isBlank()) {
+                usuario.setNombres(request.getNombres());
+            }
+            if (request.getApellidos() != null && !request.getApellidos().isBlank()) {
+                usuario.setApellidos(request.getApellidos());
+            }
+            if (request.getEdad() != null && request.getEdad() > 0) {
+                usuario.setEdad(request.getEdad());
+            }
+            if (request.getNumeroTele() != null && !request.getNumeroTele().isBlank()) {
+                usuario.setNumeroTele(request.getNumeroTele());
+            }
 
-        usuariosRepository.save(usuario);
-        return RegisterResponse.builder()
-                .success(true)
-                .error(null)
-                .build();
+            usuariosRepository.save(usuario);
+            return RegisterResponse.builder()
+                    .success(true)
+                    .error(null)
+                    .build();
 
-    }catch(Exception e){
-        return RegisterResponse.builder()
-                .success(false)
-                .error(e.getMessage())
-                .build();
+        } catch (Exception e) {
+            return RegisterResponse.builder()
+                    .success(false)
+                    .error(e.getMessage())
+                    .build();
         }
     }
-
-
 
 }
