@@ -1,5 +1,3 @@
-import axios, { AxiosError } from "axios";
-import { useAuth } from "./authContext";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // si necesitas el token
 
 
@@ -14,9 +12,9 @@ export interface UserData {
 }
 export const updateProfile = async (userData: UserData) => {
     try {
-        const token = await AsyncStorage.getItem("userToken"); // Si estás usando authContext
-        const response = await fetch("http://192.168.1.12:8080/api/Pacientes/Update", {
-            method: "PUT", // o POST según tu backend
+        const token = await AsyncStorage.getItem("userToken"); //  authContext
+        const response = await fetch("http://reconocimiento-estrabismo-env.eba-qemqhkeh.us-east-2.elasticbeanstalk.com/api/Pacientes/Update", {
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json",
                 ...(token && { Authorization: `Bearer ${token}` }),

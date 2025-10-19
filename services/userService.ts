@@ -12,7 +12,7 @@ interface RegisterResponse {
   error?: string;
 }
 
-const API_URL = 'http://192.168.1.12:8080/auth';
+const API_URL = 'http://reconocimiento-estrabismo-env.eba-qemqhkeh.us-east-2.elasticbeanstalk.com/auth';
 
 
 
@@ -68,7 +68,7 @@ export const registerUser = async (userData: RegisterData): Promise<RegisterResp
     console.log('URL del servidor:', API_URL);
     console.log('Enviando datos:', userData);
 
-    const response = await fetchWithTimeout(`${API_URL}/register`, {
+    const response = await fetchWithTimeout(`${API_URL}/register/paciente`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

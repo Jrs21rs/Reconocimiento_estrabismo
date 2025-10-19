@@ -11,6 +11,7 @@ export default function Layout() {
 
   return (
     <Tabs
+    
       screenOptions={{
         tabBarStyle: {
           backgroundColor: '#4c669f',
