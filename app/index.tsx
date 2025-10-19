@@ -90,7 +90,9 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
   },
   loginButton: {
-    backgroundColor: '#ffffff',
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: '#ffffff',
   },
   registerButton: {
     backgroundColor: 'transparent',
@@ -100,7 +102,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 18,
     textAlign: 'center',
-    color: '#4c669f',
+    color: '#ffffff',
     fontWeight: 'bold',
   },
   registerText: {
