@@ -10,12 +10,12 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name="pacientes")
+@Table(name = "pacientes")
 @PrimaryKeyJoinColumn(name = "usuario_id")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Pacientes extends Usuarios{
+public class Pacientes extends Usuarios {
     @Column(nullable = false)
     private String documentoIdentidad; // si aplica (puede ser opcional para menores)
 
@@ -23,7 +23,7 @@ public class Pacientes extends Usuarios{
     private String genero; // "Masculino", "Femenino", "Otro"
 
     @Column(nullable = false)
-    private String Institucion;//clinica o institucion donde hace examenes regulares
+    private String Institucion;// clinica o institucion donde hace examenes regulares
 
     @Column(nullable = false)
     private String fechaNacimiento;
@@ -41,11 +41,7 @@ public class Pacientes extends Usuarios{
     @Column(length = 100)
     private String tipoEstrabismo; // opcional: exotropía, endotropía, etc.
 
-        @Column(length = 500)
+    @Column(length = 500)
     private String observaciones; // anotaciones médicas
-    @ManyToMany(mappedBy = "pacientes")
-    private List<Medico> medicos;
-
-
 
 }

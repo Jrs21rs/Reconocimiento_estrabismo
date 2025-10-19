@@ -4,7 +4,6 @@ import com.Deteccion_estrabismo.backend.Dto.*;
 import com.Deteccion_estrabismo.backend.Entities.*;
 import com.Deteccion_estrabismo.backend.Repository.ConfirmationTokenRepository;
 import com.Deteccion_estrabismo.backend.Repository.UsuariosRepository;
-import com.Deteccion_estrabismo.backend.Repository.MedicoRepository;
 import com.Deteccion_estrabismo.backend.Repository.PacientesRepository;
 import com.Deteccion_estrabismo.backend.Repository.ResponsableRepository;
 import com.Deteccion_estrabismo.backend.Repository.AdministradorRepository;
@@ -31,21 +30,21 @@ public class AuthService {
     private final BuildObjectMapper mapper;
     private final PacientesRepository pacientesRepository;
     private final AdministradorRepository administradorRepository;
-    private final MedicoRepository medicoRepository;
+
     private final ResponsableRepository responsableRepository;
     private ConfirmationTokenRepository tokenRepository;
     private AuthenticationManager authenticationManager;
     private EmailService emailService;
 
     public AuthService(AdministradorRepository administradorRepository, BuildObjectMapper mapper,
-            PacientesRepository pacientesRepository, MedicoRepository medicoRepository,
+            PacientesRepository pacientesRepository,
             ResponsableRepository responsableRepository, AuthenticationManager authenticationManager,
             EmailService emailService, JwtService jwtService,
             ConfirmationTokenRepository tokenRepository, UsuariosRepository usuariosRepository) {
         this.administradorRepository = administradorRepository;
         this.mapper = mapper;
         this.pacientesRepository = pacientesRepository;
-        this.medicoRepository = medicoRepository;
+
         this.responsableRepository = responsableRepository;
         this.authenticationManager = authenticationManager;
         this.emailService = emailService;
@@ -120,7 +119,6 @@ public class AuthService {
 
             switch (request.getRol()) {
                 case PACIENTE -> usuario = crearPaciente((RegisterPacienteRequest) request);
-                case MEDICO -> usuario = crearMedico((RegisterMedicoRequest) request);
                 case RESPONSABLE -> usuario = crearResponsable((RegisterResponsableRequest) request);
                 case ADMIN -> usuario = crearAdministrador((RegisterAdminRequest) request);
                 default -> throw new IllegalArgumentException("Rol no válido");
@@ -150,14 +148,6 @@ public class AuthService {
         }
 
         return pacientesRepository.save(paciente);
-    }
-
-    private Medico crearMedico(RegisterMedicoRequest request) {
-        Medico medico = mapper.converterTo(request, Medico.class);
-        medico.setPassword(passwordEncoder.encode(request.getPassword()));
-        medico.setRol(request.getRol());
-        medico.setEnabled(false);
-        return medicoRepository.save(medico);
     }
 
     private Responsable crearResponsable(RegisterResponsableRequest request) {

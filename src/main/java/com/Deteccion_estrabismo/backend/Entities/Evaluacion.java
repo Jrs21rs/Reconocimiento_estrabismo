@@ -19,10 +19,6 @@ public class Evaluacion {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "medico_id", nullable = false)
-    private Medico medico;
-
-    @ManyToOne
     @JoinColumn(name = "paciente_id", nullable = false)
     private Pacientes paciente;
 

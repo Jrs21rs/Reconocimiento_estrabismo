@@ -27,15 +27,13 @@ public class ConfirmationToken{
     private LocalDateTime expiresAt;
     private String usuarioId;
 
-
-
-
-    public ConfirmationToken(String usuarioId){
-        this.usuarioId=usuarioId;
-        this.token= UUID.randomUUID().toString();
+    public ConfirmationToken(String token, LocalDateTime createdAt, LocalDateTime expiresAt, String usuarioId) {
+        this.token = UUID.randomUUID().toString();
         this.createdAt = LocalDateTime.now();
         this.expiresAt = createdAt.plusMinutes(15);
+        this.usuarioId = usuarioId;
     }
+
 
 
 }
