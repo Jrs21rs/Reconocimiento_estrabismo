@@ -10,12 +10,12 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:19006",          // frontend web local
-                            "exp://192.168.0.5:8080",        // Expo Go local
-                            "http://detecteye.us-east-2.elasticbeanstalk.com" // producción
-                        )
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
+                .allowedOrigins("http://localhost:19006", // frontend web local
+                        "exp://192.168.0.5:8080", // Expo Go local
+                        "https://feature-loginconexion.diuzv3k23w2bz.amplifyapp.com" // producción
+                )
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true);
     }
 }
