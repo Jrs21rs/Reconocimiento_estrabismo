@@ -7,8 +7,9 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "build": "expo export:web",
-    "prebuild": "expo install"
+    "build": "expo export -p web",
+    "prebuild": "expo install",
+    "export": "expo export -p web"
   },
   "engines": {
     "node": ">=16.0.0"

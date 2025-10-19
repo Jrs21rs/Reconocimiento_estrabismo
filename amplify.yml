@@ -5,16 +5,17 @@ frontend:
       commands:
         - nvm install 18
         - nvm use 18
-        - npm install -g expo-cli
+        - npm install -g expo-cli@latest
         - npm ci
     build:
       commands:
-        - npm run build
+        - npm run export
   artifacts:
-    baseDirectory: web-build
+    baseDirectory: dist
     files:
       - '**/*'
   cache:
     paths:
       - node_modules/**/*
       - .expo/**/*
+      - .expo/web/**/*
