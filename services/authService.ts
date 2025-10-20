@@ -39,7 +39,8 @@ export const loginUser = async (correo: string, password: string): Promise<Login
       body: JSON.stringify({ correo, password }),
     });
     
-    if (!response.ok) {
+    
+    if (response.status !== 200) {
       const errorData = await response.json().catch(() => ({}));
       console.log('Error respuesta servidor:', response.status, errorData);
       return { error: `Error del servidor: ${response.status} ${errorData.message || ''}` };

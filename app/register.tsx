@@ -2,22 +2,40 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Link, router } from "expo-router";
 import { useState } from "react";
 import { Alert, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Picker } from '@react-native-picker/picker';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { registerUser } from "../services/userService";
 
 export default function RegisterScreen() {
+  const [tipoDocumento, setTipoDocumento] = useState("");
+  const [documento, setDocumento] = useState("");
   const [nombres, setNombres] = useState("");
   const [apellidos, setApellidos] = useState("");
-  const [edad, setEdad] = useState("");
+  const [fechaNacimiento, setFechaNacimiento] = useState("");
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
   const [numeroTele, setNumeroTele] = useState("");
   const [aceptaTerminos, setAceptaTerminos] = useState(false);
   const [mostrarTerminos, setMostrarTerminos] = useState(false);
+  const [mostrarDatePicker, setMostrarDatePicker] = useState(false);
+  
+  const calcularEdad = (fechaNac: string) => {
+    const hoy = new Date();
+    const fechaNacDate = new Date(fechaNac);
+    let edad = hoy.getFullYear() - fechaNacDate.getFullYear();
+    const mes = hoy.getMonth() - fechaNacDate.getMonth();
+    
+    if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacDate.getDate())) {
+      edad--;
+    }
+    
+    return edad;
+  };
 
   const handleRegister = async () => {
     try {
       // Validar todos los campos
-      if (!nombres || !apellidos || !edad || !correo || !password || !numeroTele) {
+      if (!tipoDocumento || !documento || !nombres || !apellidos || !fechaNacimiento || !correo || !password || !numeroTele) {
         Alert.alert("Error", "Por favor complete todos los campos");
         return;
       }
@@ -27,10 +45,17 @@ export default function RegisterScreen() {
         return;
       }
 
-      // Validar que la edad sea un número válido
-      const edadNum = parseInt(edad, 10);
-      if (isNaN(edadNum) || edadNum <= 0) {
-        Alert.alert("Error", "Por favor ingrese una edad válida");
+      // Validar que la fecha de nacimiento sea válida y la edad sea mayor a 18
+      const edadUsuario = calcularEdad(fechaNacimiento);
+      if (edadUsuario < 18) {
+        Alert.alert("Error", "Debes ser mayor de 18 años para registrarte");
+        return;
+      }
+
+      // Validar formato de documento (solo números)
+      const docRegex = /^\d+$/;
+      if (!docRegex.test(documento)) {
+        Alert.alert("Error", "El número de documento solo puede contener números");
         return;
       }
 
@@ -49,9 +74,11 @@ export default function RegisterScreen() {
       }
 
       const userData = {
+        tipoDocumento,
+        documento,
         nombres,
         apellidos,
-        edad: edadNum,
+        fechaNacimiento,
         correo,
         password,
         numeroTele
@@ -92,6 +119,36 @@ export default function RegisterScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.content}>
           <Text style={styles.title}>Registro</Text>
+          <Text style={styles.reminderText}>
+            Recuerda que debes ser mayor de 18 años para registrarte.
+          </Text>
+          
+          <View style={styles.pickerContainer}>
+            <Text style={styles.label}>Tipo de documento</Text>
+            <View style={styles.pickerWrapper}>
+              <Picker
+                selectedValue={tipoDocumento}
+                onValueChange={(itemValue) => setTipoDocumento(itemValue)}
+                style={styles.picker}
+                dropdownIconColor="#666"
+              >
+                <Picker.Item label="Seleccione un tipo" value="" />
+                <Picker.Item label="Cédula de Ciudadanía" value="CC" />
+                <Picker.Item label="Cédula de Extranjería" value="CE" />
+                <Picker.Item label="Pasaporte" value="PA" />
+                <Picker.Item label="Tarjeta de Identidad" value="TI" />
+              </Picker>
+            </View>
+          </View>
+
+          <TextInput
+            style={styles.input}
+            placeholder="Número de documento"
+            placeholderTextColor="#666"
+            value={documento}
+            onChangeText={setDocumento}
+            keyboardType="numeric"
+          />
           
           <TextInput
             style={styles.input}
@@ -99,6 +156,7 @@ export default function RegisterScreen() {
             placeholderTextColor="#666"
             value={nombres}
             onChangeText={setNombres}
+            autoCapitalize="words"
           />
           
           <TextInput
@@ -107,15 +165,31 @@ export default function RegisterScreen() {
             placeholderTextColor="#666"
             value={apellidos}
             onChangeText={setApellidos}
+            autoCapitalize="words"
           />
 
-          <TextInput
+          <TouchableOpacity 
             style={styles.input}
-            placeholder="Edad"
-            placeholderTextColor="#666"
-            value={edad}
-            onChangeText={setEdad}
-            keyboardType="numeric"
+            onPress={() => setMostrarDatePicker(true)}
+          >
+            <Text style={fechaNacimiento ? styles.inputText : styles.placeholderText}>
+              {fechaNacimiento || 'Fecha de nacimiento'}
+            </Text>
+          </TouchableOpacity>
+
+          <DateTimePickerModal
+            isVisible={mostrarDatePicker}
+            mode="date"
+            onConfirm={(date) => {
+              setMostrarDatePicker(false);
+              const fechaFormateada = date.toISOString().split('T')[0];
+              setFechaNacimiento(fechaFormateada);
+            }}
+            onCancel={() => setMostrarDatePicker(false)}
+            maximumDate={new Date()}
+            locale="es_ES"
+            confirmTextIOS="Confirmar"
+            cancelTextIOS="Cancelar"
           />
           
           <TextInput
@@ -210,6 +284,7 @@ export default function RegisterScreen() {
             >
               <Text style={styles.modalButtonText}>Cerrar</Text>
             </TouchableOpacity>
+
           </ScrollView>
         </View>
       </Modal>
@@ -220,6 +295,14 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  reminderText: {
+    color: '#ffeb3b',
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 20,
+    fontStyle: 'italic',
+    paddingHorizontal: 20,
   },
   termsContainer: {
     flexDirection: 'row',
@@ -312,6 +395,32 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderRadius: 10,
     fontSize: 16,
+    color: '#000',
+  },
+  inputText: {
+    color: '#000',
+  },
+  placeholderText: {
+    color: '#666',
+  },
+  pickerContainer: {
+    marginBottom: 15,
+    width: '100%',
+  },
+  pickerWrapper: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  picker: {
+    width: '100%',
+    height: 50,
+    color: '#000',
+  },
+  label: {
+    color: '#fff',
+    marginBottom: 5,
+    marginLeft: 5,
   },
   button: {
     backgroundColor: "#ffffff",

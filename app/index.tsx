@@ -29,8 +29,7 @@ export default function WelcomeScreen() {
           </View>
 
           <Text style={styles.description}>
-            Una herramienta profesional para la detección temprana de estrabismo
-            mediante el análisis de imágenes.
+            Es una herramienta profesional diseñada para la detección temprana del estrabismo en niños mediante el análisis de imágenes.
           </Text>
         </View>
       </LinearGradient>

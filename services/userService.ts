@@ -1,7 +1,9 @@
 interface RegisterData {
+  tipoDocumento: string;
+  documento: string;
   nombres: string;
   apellidos: string;
-  edad: number;
+  fechaNacimiento: string;
   correo: string;
   password: string;
   numeroTele: string;
@@ -12,7 +14,7 @@ interface RegisterResponse {
   error?: string;
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_AUTH_URL || '';
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
 
 const fetchWithTimeout = async (url: string, options: RequestInit, timeout = 15000) => {  // Aumentado a 15 segundos
@@ -67,7 +69,7 @@ export const registerUser = async (userData: RegisterData): Promise<RegisterResp
     console.log('URL del servidor:', API_URL);
     console.log('Enviando datos:', userData);
 
-    const response = await fetchWithTimeout(`${API_URL}/register/paciente`, {
+    const response = await fetchWithTimeout(`${API_URL}/auth/register/responsable`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -76,18 +78,18 @@ export const registerUser = async (userData: RegisterData): Promise<RegisterResp
       body: JSON.stringify(userData),
     });
     
+    const data = await response.json();
+    console.log('Respuesta del servidor:', data);
+    
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Respuesta del servidor no válida:', response.status, errorText);
+      console.error('Error en la respuesta del servidor:', response.status, data);
       return { 
         success: false, 
-        error: `Error del servidor (${response.status}): ${errorText}` 
+        error: data.message || `Error del servidor (${response.status})`
       };
     }
 
-    const data = await response.json();
-    console.log('Respuesta exitosa:', data);
-    return data;
+    return { success: true, ...data };
   } catch (error) {
     console.error('Error detallado:', error);
     return { 

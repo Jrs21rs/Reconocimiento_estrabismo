@@ -17,6 +17,9 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.tudominio.myapp",
+      "versionCode": 1,
+      "permissions": [],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -34,6 +37,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "4bbf9f1f-7c13-490e-aca9-e188e7fc347a"
+      }
+    },
+    "owner": "valentinaneira"
   }
 }
