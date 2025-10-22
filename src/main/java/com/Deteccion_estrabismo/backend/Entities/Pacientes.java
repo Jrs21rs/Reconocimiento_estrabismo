@@ -22,7 +22,7 @@ public class Pacientes {
     @Column(nullable = false)
     private Integer documentoIdentidad;
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = true, length = 20)
     private TipoDocumento tipoDocumento;
     @Column(nullable = false, length = 100)
     private String apellidos;
