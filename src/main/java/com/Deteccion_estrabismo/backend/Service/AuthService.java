@@ -115,10 +115,10 @@ public class AuthService {
                 return RegisterResponse.error("El correo ya está registrado");
             }
 
-            Usuarios usuario;
+            Usuarios usuario = null;
 
             switch (request.getRol()) {
-                case PACIENTE -> usuario = crearPaciente((RegisterPacienteRequest) request);
+                case PACIENTE -> crearPaciente((RegisterPacienteRequest) request);
                 case RESPONSABLE -> usuario = crearResponsable((RegisterResponsableRequest) request);
                 case ADMIN -> usuario = crearAdministrador((RegisterAdminRequest) request);
                 default -> throw new IllegalArgumentException("Rol no válido");
@@ -137,14 +137,12 @@ public class AuthService {
 
     private Pacientes crearPaciente(RegisterPacienteRequest request) {
         Pacientes paciente = mapper.converterTo(request, Pacientes.class);
-        paciente.setPassword(passwordEncoder.encode(request.getPassword()));
-        paciente.setRol(request.getRol());
-        paciente.setEnabled(false);
 
-        if (request.getResponsableId() != null) {
-            Responsable responsable = responsableRepository.findById(request.getResponsableId())
+        if (request.getDocumentoIdentidadResponsable() != null) {
+            Usuarios responsable = usuariosRepository
+                    .findByDocumentoIdentidad(request.getDocumentoIdentidadResponsable())
                     .orElseThrow(() -> new RuntimeException("Responsable no encontrado"));
-            paciente.setResponsable(responsable);
+            paciente.setResponsable((Responsable) responsable);
         }
 
         return pacientesRepository.save(paciente);
@@ -166,18 +164,6 @@ public class AuthService {
         return administradorRepository.save(administrador);
     }
 
-    private void copiarPropiedadesBase(Usuarios source, Usuarios target) {
-        target.setId(source.getId());
-        target.setNombres(source.getNombres());
-        target.setApellidos(source.getApellidos());
-        target.setEdad(source.getEdad());
-        target.setCorreo(source.getCorreo());
-        target.setPassword(source.getPassword());
-        target.setNumeroTele(source.getNumeroTele());
-        target.setRol(source.getRol());
-        target.setEnabled(source.isEnabled());
-    }
-
     private void enviarTokenConfirmacion(Usuarios usuario) {
         String confirmationToken = UUID.randomUUID().toString();
 
@@ -190,7 +176,7 @@ public class AuthService {
 
         tokenRepository.save(tokenEntity);
 
-        String link = "http://localhost:8080/auth/confirm?token=" + confirmationToken;
+        String link = "http://172.18.160.1:5000/auth/confirm?token=" + confirmationToken;
 
         emailService.enviarCorreo(
                 usuario.getCorreo(),
@@ -200,8 +186,7 @@ public class AuthService {
 
     private String construirMensajeEmail(Usuarios usuario, String link) {
         return switch (usuario.getRol()) {
-            case MEDICO -> "Bienvenido Dr./Dra. " + usuario.getNombres() +
-                    ",\n\nConfirma tu cuenta para comenzar a evaluar pacientes:\n" + link;
+
             case RESPONSABLE -> "Bienvenido/a " + usuario.getNombres() +
                     ",\n\nConfirma tu cuenta para gestionar pacientes:\n" + link;
             case ADMIN -> "Bienvenido Administrador " + usuario.getNombres() +
@@ -222,9 +207,6 @@ public class AuthService {
             }
             if (request.getApellidos() != null && !request.getApellidos().isBlank()) {
                 usuario.setApellidos(request.getApellidos());
-            }
-            if (request.getEdad() != null && request.getEdad() > 0) {
-                usuario.setEdad(request.getEdad());
             }
             if (request.getNumeroTele() != null && !request.getNumeroTele().isBlank()) {
                 usuario.setNumeroTele(request.getNumeroTele());

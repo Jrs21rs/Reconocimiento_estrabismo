@@ -1,5 +1,6 @@
 package com.Deteccion_estrabismo.backend.Repository;
 
+import com.Deteccion_estrabismo.backend.Entities.Responsable;
 import com.Deteccion_estrabismo.backend.Entities.Usuarios;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,4 +15,6 @@ public interface UsuariosRepository extends JpaRepository<Usuarios, Long> {
 
     // Verificar si un correo ya está registrado
     boolean existsByCorreo(String correo);
+
+    Optional<Usuarios> findByDocumentoIdentidad(Integer documentoIdentidadResponsable);
 }

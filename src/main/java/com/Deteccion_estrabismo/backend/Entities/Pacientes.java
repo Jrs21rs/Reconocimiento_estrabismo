@@ -3,30 +3,37 @@ package com.Deteccion_estrabismo.backend.Entities;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import java.util.Date;
 
-import java.util.List;
-
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "pacientes")
-@PrimaryKeyJoinColumn(name = "usuario_id")
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Pacientes extends Usuarios {
+public class Pacientes {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(nullable = false, length = 100)
+    private String nombres;
     @Column(nullable = false)
-    private String documentoIdentidad; // si aplica (puede ser opcional para menores)
+    private Integer documentoIdentidad;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private TipoDocumento tipoDocumento;
+    @Column(nullable = false, length = 100)
+    private String apellidos;
+    @Column(nullable = false, length = 100)
+    private Date fechaNacimiento;
 
     @Column(nullable = false)
     private String genero; // "Masculino", "Femenino", "Otro"
 
     @Column(nullable = false)
-    private String Institucion;// clinica o institucion donde hace examenes regulares
-
-    @Column(nullable = false)
-    private String fechaNacimiento;
+    private String Institucion;// clinica o institucion donde hace examenes regulare
 
     @ManyToOne
     @JoinColumn(name = "responsable_id")
@@ -34,14 +41,5 @@ public class Pacientes extends Usuarios {
 
     @Column(length = 255)
     private String fotoPaciente; // imagen tomada para análisis de estrabismo
-
-    @Column(length = 50)
-    private String resultadoDeteccion; // "Normal", "Estrabismo leve", etc.
-
-    @Column(length = 100)
-    private String tipoEstrabismo; // opcional: exotropía, endotropía, etc.
-
-    @Column(length = 500)
-    private String observaciones; // anotaciones médicas
 
 }

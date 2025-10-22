@@ -7,16 +7,17 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+
 @EqualsAndHashCode(callSuper = true)
 
 @Entity
-@Table(name="responsables")
-@PrimaryKeyJoinColumn(name="usuario_id")
+@Table(name = "responsables")
+@PrimaryKeyJoinColumn(name = "usuario_id")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Responsable extends Usuarios{
-    @Column(nullable = false, length = 50)
+public class Responsable extends Usuarios {
+    @Column(nullable = true, length = 50)
     private String parentesco; // "Padre", "Madre", "Tío", "Tutor", etc.
 
     @Column(length = 50)

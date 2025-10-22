@@ -1,4 +1,5 @@
 package com.Deteccion_estrabismo.backend.Entities;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,8 +13,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
-
 
 @Entity
 @Table(name = "usuarios") // nombre de la coleccion de mongodb
@@ -28,10 +29,15 @@ public class Usuarios implements UserDetails {
     private Long id;
     @Column(nullable = false, length = 100)
     private String nombres;
+    @Column(nullable = true)
+    private Integer documentoIdentidad;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true, length = 20)
+    private TipoDocumento tipoDocumento;
     @Column(nullable = false, length = 100)
     private String apellidos;
-    @Column(nullable = false)
-    private Integer edad;
+    @Column(nullable = true, length = 100)
+    private Date fechaNacimiento;
     @Column(nullable = false, unique = true, length = 100)
     private String correo;
     @Column(nullable = false)
@@ -41,8 +47,7 @@ public class Usuarios implements UserDetails {
     @Enumerated(EnumType.STRING) // para guardar el rol como texto
     @Column(nullable = false, length = 50)
     private Rol rol; // Pacientes, medicos o administradores
-    private boolean enabled;//  para activar/desactivar
-
+    private boolean enabled;// para activar/desactivar
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

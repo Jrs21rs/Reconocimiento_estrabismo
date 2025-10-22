@@ -22,10 +22,6 @@ public class Evaluacion {
     @JoinColumn(name = "paciente_id", nullable = false)
     private Pacientes paciente;
 
-    @ManyToOne
-    @JoinColumn(name = "responsable_id", nullable = false)
-    private Responsable responsable;
-
     @Column(length = 500)
     private String resultado; // Ej: "Estrabismo leve, ojo izquierdo"
 

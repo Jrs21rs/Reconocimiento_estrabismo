@@ -23,28 +23,29 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
     @Autowired
-    private  JwtAuthenticationFilter jwtAuthFilter;
+    private JwtAuthenticationFilter jwtAuthFilter;
     @Autowired
-    private  com.Deteccion_estrabismo.backend.Service.CustomUserDetailsService customUserDetailsService;
+    private com.Deteccion_estrabismo.backend.Service.CustomUserDetailsService customUserDetailsService;
 
     @Bean
-    public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())//Desactivar  CSRF(Cross-Site Request Forgery) para pruebas con POSTMAN
+                .csrf(csrf -> csrf.disable())// Desactivar CSRF(Cross-Site Request Forgery) para pruebas con POSTMAN
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll() // publico
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/medico/**").hasRole("MEDICO")
+                        .requestMatchers("/responsable/**").hasRole("RESPONSABLE")
                         .requestMatchers("/paciente/**").hasRole("PACIENTE")
                         .anyRequest().authenticated()// el resto pide login
                 )
-                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .formLogin(login -> login.disable())//quitar el login por formulario
-                .httpBasic(httpBasic -> httpBasic.disable());// Quitar el basic  Auth mientras se usa
+                .formLogin(login -> login.disable())// quitar el login por formulario
+                .httpBasic(httpBasic -> httpBasic.disable());// Quitar el basic Auth mientras se usa
         return http.build();
     }
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -52,10 +53,12 @@ public class SecurityConfig {
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

@@ -1,14 +1,27 @@
-# Usa la imagen base de Amazon Corretto 21
-FROM amazoncorretto:21
+# ---------- Etapa de build ----------
+FROM maven:3.9-eclipse-temurin-21 AS builder
+WORKDIR /workspace
 
-# Establece el directorio de trabajo
+# Cacheo de dependencias
+COPY pom.xml .
+RUN mvn -q -e -B -DskipTests dependency:go-offline
+
+# Copia del código y build
+COPY src ./src
+RUN mvn -q -e -B -DskipTests package
+
+# ---------- Runtime ----------
+FROM amazoncorretto:21-alpine
 WORKDIR /app
 
-# Copia el archivo JAR desde la raíz del proyecto
-COPY backend-0.0.1-SNAPSHOT.jar app.jar
+# Copiamos el JAR compilado desde la etapa anterior
+COPY --from=builder /workspace/target/*.jar /app/app.jar
 
-# Expone el puerto que usa tu aplicación
-EXPOSE 5000
+# Puerto de la app (Render inyecta $PORT; Spring lo toma vía server.port)
+EXPOSE 8080
 
-# Comando para ejecutar la aplicación
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Opciones de JVM opcionales
+ENV JAVA_OPTS=""
+
+# Comando de arranque
+ENTRYPOINT ["sh","-c","java $JAVA_OPTS -jar /app/app.jar"]
