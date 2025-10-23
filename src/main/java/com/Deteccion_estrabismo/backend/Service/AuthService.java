@@ -115,17 +115,39 @@ public class AuthService {
                 return RegisterResponse.error("El correo ya está registrado");
             }
 
-            Usuarios usuario = null;
-
-            switch (request.getRol()) {
-                case PACIENTE -> crearPaciente((RegisterPacienteRequest) request);
-                case RESPONSABLE -> usuario = crearResponsable((RegisterResponsableRequest) request);
-                case ADMIN -> usuario = crearAdministrador((RegisterAdminRequest) request);
-                default -> throw new IllegalArgumentException("Rol no válido");
+            if (request.getTipoDocumento() == null) {
+                return RegisterResponse.error("El tipo de documento es obligatorio");
             }
 
-            // Generar y enviar token
-            enviarTokenConfirmacion(usuario);
+            Usuarios usuario = null;
+
+            switch (request.getTipoDocumento()) {
+                case REGISTRO_CIVIL, TI, NUIP -> {
+                    if (request instanceof RegisterPacienteRequest pacienteRequest) {
+                        crearPaciente(pacienteRequest);
+                        return RegisterResponse.success(); // Paciente no requiere confirmación por correo
+                    } else {
+                        return RegisterResponse.error("La estructura del request no corresponde a un Paciente");
+                    }
+                }
+                case CC, CE, PASAPORTE -> {
+                    if (request instanceof RegisterResponsableRequest responsableRequest) {
+                        usuario = crearResponsable(responsableRequest);
+                    } else if (request instanceof RegisterAdminRequest adminRequest) {
+                        usuario = crearAdministrador(adminRequest);
+                    } else {
+                        return RegisterResponse.error("La estructura del request no corresponde a un Responsable/Admin");
+                    }
+                }
+                default -> {
+                    return RegisterResponse.error("Tipo de documento no soportado");
+                }
+            }
+
+            if (usuario != null) {
+                // Generar y enviar token solo para Responsables/Admin (son Usuarios)
+                enviarTokenConfirmacion(usuario);
+            }
 
             return RegisterResponse.success();
 
