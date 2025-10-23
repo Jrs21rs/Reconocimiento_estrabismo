@@ -32,9 +32,6 @@ public class Pacientes {
     @Column(nullable = false)
     private String genero; // "Masculino", "Femenino", "Otro"
 
-    @Column(nullable = false)
-    private String Institucion;// clinica o institucion donde hace examenes regulare
-
     @ManyToOne
     @JoinColumn(name = "responsable_id")
     private Responsable responsable; // vínculo con el acudiente
