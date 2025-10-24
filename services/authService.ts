@@ -1,4 +1,3 @@
-const API_URL = process.env.NEXT_PUBLIC_API_AUTH_URL || '';
 
 interface LoginResponse {
   token?: string;
@@ -8,14 +7,15 @@ interface LoginResponse {
 
 export const loginUser = async (correo: string, password: string): Promise<LoginResponse> => {
   try {
-    const url = `${API_URL}/login`;
+    const url = 'https://reconocimiento-estrabismo.onrender.com/auth/login';
     console.log('Intentando conectar a:', url);
     console.log('Datos de inicio de sesión:', { correo });
 
     // Verificar primero si el servidor está accesible
     try {
       console.log('Verificando disponibilidad del servidor...');
-      const checkResponse = await fetch(process.env.NEXT_PUBLIC_API_AUTH_URL || '', { 
+      const checkResponse = await fetch(
+        'https://reconocimiento-estrabismo.onrender.com/auth', { 
         method: 'HEAD',
         headers: {
           'Accept': '*/*',
@@ -39,7 +39,7 @@ export const loginUser = async (correo: string, password: string): Promise<Login
       body: JSON.stringify({ correo, password }),
     });
     
-    
+
     if (response.status !== 200) {
       const errorData = await response.json().catch(() => ({}));
       console.log('Error respuesta servidor:', response.status, errorData);

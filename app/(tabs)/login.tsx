@@ -34,8 +34,8 @@ export default function LoginScreen() {
 
       if (response.token) {
         // Aquí puedes manejar el token, por ejemplo guardarlo en AsyncStorage
-        // Redirigir al usuario a la pantalla de inicio
-        router.replace("/(tabs)");
+        // Redirigir al usuario al formulario de registro de paciente
+        router.push("./PatientRegistrationForm");
         Alert.alert("Login exitoso", "Has iniciado sesión correctamente");
       } else {
         Alert.alert("Error", "Respuesta del servidor inválida");

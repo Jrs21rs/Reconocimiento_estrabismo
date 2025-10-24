@@ -13,11 +13,7 @@ interface RegisterResponse {
   success?: boolean;
   error?: string;
 }
-
-const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-
-
-const fetchWithTimeout = async (url: string, options: RequestInit, timeout = 15000) => {  // Aumentado a 15 segundos
+export const fetchWithTimeout = async (url: string, options: RequestInit, timeout = 15000) => {  // Aumentado a 15 segundos
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
   
@@ -66,10 +62,10 @@ const fetchWithTimeout = async (url: string, options: RequestInit, timeout = 150
 export const registerUser = async (userData: RegisterData): Promise<RegisterResponse> => {
   try {
     console.log('Iniciando registro...');
-    console.log('URL del servidor:', API_URL);
+    console.log('URL del servidor:', 'https://reconocimiento-estrabismo.onrender.com');
     console.log('Enviando datos:', userData);
 
-    const response = await fetchWithTimeout(`${API_URL}/auth/register/responsable`, {
+    const response = await fetchWithTimeout('https://reconocimiento-estrabismo.onrender.com/auth/register/responsable', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

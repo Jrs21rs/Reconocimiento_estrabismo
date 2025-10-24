@@ -59,6 +59,13 @@ export default function Layout() {
           title: "Historial Clínico",
         }}
       />
+      <Tabs.Screen
+        name="PatientRegistrationForm"
+        options={{
+          href: null, // Oculta esta pantalla de la barra de tabs
+          title: "Registro de Paciente",
+        }}
+      />
     </Tabs>
   );
 }

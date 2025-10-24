@@ -1,4 +1,3 @@
-const API_URL = process.env.NEXT_PUBLIC_API_AUTH_URL || '';
 
 interface AuthResponse {
   success?: boolean;
@@ -10,9 +9,9 @@ export const testServerConnection = async (): Promise<AuthResponse> => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
     
-    console.log('Probando conexión al servidor:', API_URL);
+    console.log('Probando conexión al servidor:','https://reconocimiento-estrabismo.onrender.com/auth');
     
-    const response = await fetch(process.env.NEXT_PUBLIC_API_AUTH_URL || '', {
+    const response = await fetch('https://reconocimiento-estrabismo.onrender.com/auth', {
       method: 'GET',
       headers: {
         'Accept': 'application/json',

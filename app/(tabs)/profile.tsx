@@ -2,12 +2,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React from 'react';
 import {
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { useAuth } from '../../services/authContext';
 
@@ -24,6 +24,11 @@ export default function ProfileScreen() {
     router.push("./clinicalHistory");
   };
 
+  const handleRegisterPatient = () => {
+    // Navegamos al formulario de registro de paciente
+    router.push("./PatientRegistrationForm");
+  };
+
   const handleLogout = () => {
     Alert.alert(
       "Cerrar Sesión",
@@ -34,7 +39,7 @@ export default function ProfileScreen() {
           text: "Sí, cerrar sesión", 
           onPress: async () => {
             await logout();
-            router.replace("/");
+            router.replace("./index");
           }
         }
       ]
@@ -74,6 +79,20 @@ export default function ProfileScreen() {
             <Text style={styles.optionTitle}>Historial Clínico</Text>
             <Text style={styles.optionDescription}>
               Ver historial de detecciones de estrabismo
+            </Text>
+          </View>
+          <Ionicons name="chevron-forward" size={24} color="#4c669f" />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.optionButton}
+          onPress={handleRegisterPatient}
+        >
+          <Ionicons name="person-add-outline" size={24} color="#4c669f" />
+          <View style={styles.optionTextContainer}>
+            <Text style={styles.optionTitle}>Registrar Paciente</Text>
+            <Text style={styles.optionDescription}>
+              Registra un nuevo paciente a tu cargo
             </Text>
           </View>
           <Ionicons name="chevron-forward" size={24} color="#4c669f" />
