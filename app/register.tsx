@@ -1,14 +1,14 @@
+import { Picker } from '@react-native-picker/picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Link, router } from "expo-router";
 import { useState } from "react";
 import { Alert, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { Picker } from '@react-native-picker/picker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { registerUser } from "../services/userService";
 
 export default function RegisterScreen() {
   const [tipoDocumento, setTipoDocumento] = useState("");
-  const [documento, setDocumento] = useState("");
+  const [documentoIdentidad, setDocumentoIdentidad] = useState("");
   const [nombres, setNombres] = useState("");
   const [apellidos, setApellidos] = useState("");
   const [fechaNacimiento, setFechaNacimiento] = useState("");
@@ -35,7 +35,7 @@ export default function RegisterScreen() {
   const handleRegister = async () => {
     try {
       // Validar todos los campos
-      if (!tipoDocumento || !documento || !nombres || !apellidos || !fechaNacimiento || !correo || !password || !numeroTele) {
+      if (!tipoDocumento || !documentoIdentidad || !nombres || !apellidos || !fechaNacimiento || !correo || !password || !numeroTele) {
         Alert.alert("Error", "Por favor complete todos los campos");
         return;
       }
@@ -54,7 +54,7 @@ export default function RegisterScreen() {
 
       // Validar formato de documento (solo números)
       const docRegex = /^\d+$/;
-      if (!docRegex.test(documento)) {
+      if (!docRegex.test(documentoIdentidad)) {
         Alert.alert("Error", "El número de documento solo puede contener números");
         return;
       }
@@ -75,7 +75,7 @@ export default function RegisterScreen() {
 
       const userData = {
         tipoDocumento,
-        documento,
+        documentoIdentidad,
         nombres,
         apellidos,
         fechaNacimiento,
@@ -145,8 +145,8 @@ export default function RegisterScreen() {
             style={styles.input}
             placeholder="Número de documento"
             placeholderTextColor="#666"
-            value={documento}
-            onChangeText={setDocumento}
+            value={documentoIdentidad}
+            onChangeText={setDocumentoIdentidad}
             keyboardType="numeric"
           />
           

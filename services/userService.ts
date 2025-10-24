@@ -1,6 +1,6 @@
 interface RegisterData {
   tipoDocumento: string;
-  documento: string;
+  documentoIdentidad: string;
   nombres: string;
   apellidos: string;
   fechaNacimiento: string;

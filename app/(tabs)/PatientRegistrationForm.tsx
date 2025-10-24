@@ -1,18 +1,15 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { useAuth } from '../../context/AuthContext';
 import { PatientData, registerPatient } from '../../services/patientService';
-
-type DocumentType = 'REGISTRO_CIVIL' | 'TI' | 'NUIP' | 'PASAPORTE';
-type GenderType = 'M' | 'F' | 'O' | 'N';
 
 export default function PatientRegistrationForm() {
   const onSuccess = () => {
     router.replace('/(tabs)');
   };
-  const { user } = useAuth();
+  const [token, setToken] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<PatientData>({
     tipoDocumento: 'TI',
@@ -21,25 +18,60 @@ export default function PatientRegistrationForm() {
     apellidos: '',
     fechaNacimiento: '',
     genero: 'N',
-    documentoIdentidadResponsable: user?.documento || '',
+    documentoIdentidadResponsable: '',
     parentesco: '',
     numeroTele: ''
   });
 
   useEffect(() => {
-    if (user?.documento) {
-      setFormData(prev => ({
-        ...prev,
-        documentoIdentidadResponsable: user.documento
-      }));
-    }
-  }, [user]);
+    const loadToken = async () => {
+      try {
+        const stored = await AsyncStorage.getItem('userToken');
+        if (stored) setToken(stored);
+      } catch (e) {
+        // ignore
+      }
+    };
+    loadToken();
+  }, []);
 
   const handleChange = (name: keyof PatientData, value: string) => {
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+  };
+
+  // Normaliza fechas como "2015/12/10" o "2015-12-10" a "2015-12-10".
+  // También soporta "10/12/2015" o "10-12-2015" (DD/MM/YYYY) y las convierte a YYYY-MM-DD.
+  const formatDateToISO = (input: string): string | null => {
+    if (!input) return null;
+    const s = input.trim();
+    // YYYY[-/]MM[-/]DD
+    let m = s.match(/^([0-9]{4})[-\/]([0-1][0-9])[-\/]([0-3][0-9])$/);
+    if (m) {
+      const yyyy = m[1];
+      const mm = m[2];
+      const dd = m[3];
+      const date = new Date(`${yyyy}-${mm}-${dd}T00:00:00Z`);
+      if (date.getUTCMonth() + 1 === Number(mm) && date.getUTCDate() === Number(dd)) {
+        return `${yyyy}-${mm}-${dd}`;
+      }
+      return null;
+    }
+    // DD[-/]MM[-/]YYYY
+    m = s.match(/^([0-3][0-9])[-\/]([0-1][0-9])[-\/]([0-9]{4})$/);
+    if (m) {
+      const dd = m[1];
+      const mm = m[2];
+      const yyyy = m[3];
+      const date = new Date(`${yyyy}-${mm}-${dd}T00:00:00Z`);
+      if (date.getUTCMonth() + 1 === Number(mm) && date.getUTCDate() === Number(dd)) {
+        return `${yyyy}-${mm}-${dd}`;
+      }
+      return null;
+    }
+    return null;
   };
 
   const handleSubmit = async () => {
@@ -51,7 +83,14 @@ export default function PatientRegistrationForm() {
 
     try {
       setIsLoading(true);
-      const result = await registerPatient(formData, user?.token || '');
+      const fechaISO = formatDateToISO(formData.fechaNacimiento);
+      if (!fechaISO) {
+        setIsLoading(false);
+        Alert.alert('Fecha inválida', 'Use el formato YYYY-MM-DD, por ejemplo 2015-12-10');
+        return;
+      }
+      const payload = { ...formData, fechaNacimiento: fechaISO };
+      const result = await registerPatient(payload, token);
       
       if (result.success) {
         Alert.alert('Éxito', 'Paciente registrado correctamente', [
@@ -77,7 +116,7 @@ export default function PatientRegistrationForm() {
         <View style={styles.pickerContainer}>
           <Picker
             selectedValue={formData.tipoDocumento}
-            onValueChange={(value) => handleChange('tipoDocumento', value)}
+            onValueChange={(value: string) => handleChange('tipoDocumento', value)}
             style={styles.picker}
           >
             <Picker.Item label="Tarjeta de Identidad" value="TI" />
@@ -137,7 +176,7 @@ export default function PatientRegistrationForm() {
         <View style={styles.pickerContainer}>
           <Picker
             selectedValue={formData.genero}
-            onValueChange={(value) => handleChange('genero', value)}
+            onValueChange={(value: string) => handleChange('genero', value)}
             style={styles.picker}
           >
             <Picker.Item label="No especifica" value="N" />
@@ -151,12 +190,12 @@ export default function PatientRegistrationForm() {
       <View style={styles.formGroup}>
         <Text style={styles.label}>Documento del Responsable *</Text>
         <TextInput
-          style={[styles.input, !user?.documento ? {} : styles.disabledInput]}
+          style={styles.input}
           value={formData.documentoIdentidadResponsable}
           onChangeText={(text) => handleChange('documentoIdentidadResponsable', text)}
           placeholder="Documento del responsable"
           keyboardType="numeric"
-          editable={!user?.documento}
+          editable
         />
       </View>
 
