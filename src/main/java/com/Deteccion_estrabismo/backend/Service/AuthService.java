@@ -136,7 +136,8 @@ public class AuthService {
                     } else if (request instanceof RegisterAdminRequest adminRequest) {
                         usuario = crearAdministrador(adminRequest);
                     } else {
-                        return RegisterResponse.error("La estructura del request no corresponde a un Responsable/Admin");
+                        return RegisterResponse
+                                .error("La estructura del request no corresponde a un Responsable/Admin");
                     }
                 }
                 default -> {
@@ -198,7 +199,7 @@ public class AuthService {
 
         tokenRepository.save(tokenEntity);
 
-        String link = "http://172.18.160.1:5000/auth/confirm?token=" + confirmationToken;
+        String link = "https://reconocimiento-estrabismo.onrender.com/auth/confirm?token=" + confirmationToken;
 
         emailService.enviarCorreo(
                 usuario.getCorreo(),
