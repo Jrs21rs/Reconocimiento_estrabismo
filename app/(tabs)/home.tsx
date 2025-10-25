@@ -60,12 +60,41 @@ export default function HomeScreen() {
       if (!result.canceled && result.assets && result.assets.length > 0) {
         console.log('URI de la imagen:', result.assets[0].uri);
         setSelectedImage(result.assets[0].uri);
-        // Aquí posteriormente enviaremos la imagen al backend para el análisis
+        
+        // Enviar imagen al API de FastAPI
+        const formData = new FormData();
+        formData.append('file', {
+          uri: result.assets[0].uri,
+          type: 'image/jpeg',
+          name: selectedImage,
+        }as any);
+
+        console.log('Enviando imagen al API...');
+        const response = await fetch('https://fastapi-tppn.onrender.com/predict', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        const data = await response.json();
+        console.log('Respuesta del API:', data);
+        
+        if (data.tieneEstrabismo) {
+          alert(`Estrabismo detectado\nConfianza: ${(data.confianza * 100).toFixed(2)}%`);
+        } else {
+          alert(`No se detectó estrabismo\nConfianza: ${(data.confianza * 100).toFixed(2)}%`);
+        }
       }
     } catch (error) {
       console.error('Error al seleccionar la foto:', error);
       alert('Hubo un error al seleccionar la foto. Por favor intente nuevamente.');
     }
+    const limpiarResultado = () => {
+    setSelectedImage(null);
+  };
+    
   };
 
   return (
