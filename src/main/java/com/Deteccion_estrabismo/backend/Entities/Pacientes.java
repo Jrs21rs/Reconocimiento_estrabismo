@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "pacientes")
 
@@ -34,6 +36,7 @@ public class Pacientes {
 
     @ManyToOne
     @JoinColumn(name = "responsable_id")
+    @JsonIgnore
     private Responsable responsable; // vínculo con el acudiente
 
     @Column(length = 255)
