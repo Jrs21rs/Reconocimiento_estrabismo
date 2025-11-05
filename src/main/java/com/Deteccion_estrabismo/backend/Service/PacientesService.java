@@ -23,4 +23,8 @@ public class PacientesService {
     public void delete(Long id) {
         pacientesRepository.deleteById(id);
     }
+
+    public List<Pacientes> findbyResponsableId(Long responsableId) {
+        return pacientesRepository.findByResponsableId(responsableId);
+    }
 }
