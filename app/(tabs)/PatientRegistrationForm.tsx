@@ -2,7 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { PatientData, registerPatient } from '../../services/patientService';
 
 export default function PatientRegistrationForm() {
@@ -11,6 +12,7 @@ export default function PatientRegistrationForm() {
   };
   const [token, setToken] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [formData, setFormData] = useState<PatientData>({
     tipoDocumento: 'TI',
     documentoIdentidad: '',
@@ -162,13 +164,29 @@ export default function PatientRegistrationForm() {
 
       <View style={styles.formGroup}>
         <Text style={styles.label}>Fecha de Nacimiento *</Text>
-        <TextInput
-          style={styles.input}
-          value={formData.fechaNacimiento}
-          onChangeText={(text) => handleChange('fechaNacimiento', text)}
-          placeholder="YYYY-MM-DD"
-          keyboardType="numeric"
-        />
+        <TouchableOpacity 
+          onPress={() => setShowDatePicker(true)}
+          style={styles.dateInput}
+        >
+          <Text style={formData.fechaNacimiento ? styles.dateText : styles.placeholderText}>
+            {formData.fechaNacimiento || 'Seleccione una fecha'}
+          </Text>
+        </TouchableOpacity>
+        {showDatePicker && (
+          <DateTimePicker
+            value={formData.fechaNacimiento ? new Date(formData.fechaNacimiento) : new Date()}
+            mode="date"
+            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+            onChange={(event, selectedDate) => {
+              setShowDatePicker(Platform.OS === 'ios');
+              if (selectedDate) {
+                const formattedDate = selectedDate.toISOString().split('T')[0];
+                handleChange('fechaNacimiento', formattedDate);
+              }
+            }}
+            maximumDate={new Date()}
+          />
+        )}
       </View>
 
       <View style={styles.formGroup}>
@@ -257,11 +275,26 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 12,
-    borderRadius: 8,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
     fontSize: 16,
-    backgroundColor: '#f9f9f9',
+    marginTop: 5,
+  },
+  dateInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 15,
+    marginTop: 5,
+    justifyContent: 'center',
+  },
+  dateText: {
+    fontSize: 16,
+  },
+  placeholderText: {
+    fontSize: 16,
+    color: '#999',
   },
   disabledInput: {
     backgroundColor: '#eee',
