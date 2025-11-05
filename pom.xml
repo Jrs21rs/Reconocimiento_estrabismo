@@ -88,9 +88,6 @@
     		<groupId>org.springframework.boot</groupId>
     		<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
-<<<<<<< HEAD
-
-=======
 		<!-- Validation -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -103,13 +100,7 @@
     		<artifactId>slf4j-simple</artifactId>
     		<version>2.0.9</version>
 		</dependency>
->>>>>>> 5e3fd6bdcb401eda56502e9cf0d46e58f172dfb9
-		<!-- Notificaciones y Correo -->
-		<!-- Email -->
-		<dependency>
-    		<groupId>org.springframework.boot</groupId>
-    		<artifactId>spring-boot-starter-mail</artifactId>
-		</dependency>
+
 
 		<!-- Firebase (para push notifications) -->
 		<dependency>
