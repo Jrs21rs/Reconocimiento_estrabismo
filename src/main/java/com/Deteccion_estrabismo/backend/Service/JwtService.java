@@ -61,9 +61,24 @@ public class JwtService {
 
     // 🔹 Generar token con claims extra
     public String generateToken(Map<String, Object> extraClaims, Usuarios userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", userDetails.getId());
+        claims.put("correo", userDetails.getCorreo());
+        claims.put("rol", userDetails.getRol().name());
+        claims.put("nombres", userDetails.getNombres());
+        claims.put("apellidos", userDetails.getApellidos());
+        claims.put("documentoIdentidad", userDetails.getDocumentoIdentidad());
+        claims.put("tipoDocumento",
+                userDetails.getTipoDocumento() != null ? userDetails.getTipoDocumento().name() : null);
+
+        // Agregar claims adicionales si se proporcionan
+        if (extraClaims != null) {
+            claims.putAll(extraClaims);
+        }
+
         return Jwts.builder()
-                .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
+                .setClaims(claims)
+                .setSubject(userDetails.getCorreo()) // Usamos el correo como identificador único
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -75,4 +90,5 @@ public class JwtService {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
+
 }
