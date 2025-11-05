@@ -18,31 +18,31 @@ import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 
-
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
 
     private final JwtService jwtService;
     private final UsuariosRepository usuariosRepository;
 
     @Autowired
     public JwtAuthenticationFilter(JwtService jwtService,
-                                   UsuariosRepository usuariosRepository) {
+            UsuariosRepository usuariosRepository) {
         this.jwtService = jwtService;
         this.usuariosRepository = usuariosRepository;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
+            HttpServletResponse response,
+            FilterChain filterChain)
             throws ServletException, java.io.IOException {
 
         String path = request.getServletPath();
 
-        //  Saltar validación para endpoints públicos
-        if (path.startsWith("/auth/")) {
+        // Saltar validación para endpoints públicos
+        if (path.startsWith("/auth/") ||
+                path.startsWith("/api/pdf/") ||
+                path.startsWith("/api/evaluaciones/")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -58,11 +58,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
             // Crear Authentication y ponerlo en el contexto
-            UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(
-                            usuario.getCorreo(), null,
-                            List.of(new SimpleGrantedAuthority(usuario.getRol().name()))
-                    );
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    usuario.getCorreo(), null,
+                    List.of(new SimpleGrantedAuthority(usuario.getRol().name())));
 
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }
@@ -73,10 +71,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String getTokenFromRequest(HttpServletRequest request) {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
+        if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer")) {
             return authHeader.substring(7);
         }
         return null;
     }
 }
-
