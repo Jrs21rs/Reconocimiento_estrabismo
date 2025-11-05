@@ -3,7 +3,6 @@ package com.Deteccion_estrabismo.backend.Entities;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
@@ -23,17 +22,11 @@ public class Evaluacion {
     private Pacientes paciente;
 
     @Column
-    private boolean resultado; // Ej: "Estrabismo leve, ojo izquierdo"
-
-    @Column(length = 100)
-    private String tipoEstrabismo; // Exotropía, Endotropía, etc.
+    private boolean resultado = false;
 
     @Column(name = "fecha_evaluacion")
     private LocalDate fechaEvaluacion;
 
     @Column(name = "confianza_prediccion")
     private Float confianzaPrediccion;
-
-    @Column(name = "imagen_path")
-    private String imagenPath;
 }

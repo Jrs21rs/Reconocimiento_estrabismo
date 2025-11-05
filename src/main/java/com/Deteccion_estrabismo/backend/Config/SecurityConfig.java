@@ -35,6 +35,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll() // publico
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/responsable/**").hasRole("RESPONSABLE")
+                        .requestMatchers("/api/evaluaciones/**").permitAll()
                         .requestMatchers("/paciente/**").hasRole("PACIENTE")
                         .anyRequest().authenticated()// el resto pide login
                 )

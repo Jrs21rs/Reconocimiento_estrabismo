@@ -17,7 +17,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -34,12 +33,12 @@ public class AuthService {
     private final ResponsableRepository responsableRepository;
     private ConfirmationTokenRepository tokenRepository;
     private AuthenticationManager authenticationManager;
-    private EmailService emailService;
+    private SendGridEmailService emailService;
 
     public AuthService(AdministradorRepository administradorRepository, BuildObjectMapper mapper,
             PacientesRepository pacientesRepository,
             ResponsableRepository responsableRepository, AuthenticationManager authenticationManager,
-            EmailService emailService, JwtService jwtService,
+            SendGridEmailService emailService, JwtService jwtService,
             ConfirmationTokenRepository tokenRepository, UsuariosRepository usuariosRepository) {
         this.administradorRepository = administradorRepository;
         this.mapper = mapper;
@@ -201,7 +200,8 @@ public class AuthService {
 
         String link = "https://reconocimiento-estrabismo.onrender.com/auth/confirm?token=" + confirmationToken;
 
-        emailService.enviarCorreo(
+        // Usar el servicio de email
+        emailService.sendEmail(
                 usuario.getCorreo(),
                 "Confirma tu cuenta en Detecteye - " + usuario.getRol(),
                 construirMensajeEmail(usuario, link));

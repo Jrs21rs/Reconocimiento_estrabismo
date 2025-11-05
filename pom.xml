@@ -45,8 +45,9 @@
 
 		<!-- Validación (ej. @Email, @NotNull) -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation</artifactId>
+    	<groupId>com.sendgrid</groupId>
+    	<artifactId>sendgrid-java</artifactId>
+    	<version>4.9.3</version>
 		</dependency>
 		<!--Exponer el API REST-->
 		<dependency>
@@ -87,7 +88,22 @@
     		<groupId>org.springframework.boot</groupId>
     		<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
+<<<<<<< HEAD
 
+=======
+		<!-- Validation -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+		<!-- Logging -->
+		<dependency>
+    		<groupId>org.slf4j</groupId>
+    		<artifactId>slf4j-simple</artifactId>
+    		<version>2.0.9</version>
+		</dependency>
+>>>>>>> 5e3fd6bdcb401eda56502e9cf0d46e58f172dfb9
 		<!-- Notificaciones y Correo -->
 		<!-- Email -->
 		<dependency>
