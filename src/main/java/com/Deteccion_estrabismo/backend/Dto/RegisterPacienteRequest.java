@@ -1,8 +1,11 @@
 package com.Deteccion_estrabismo.backend.Dto;
 
 import com.Deteccion_estrabismo.backend.Entities.Rol;
+import com.Deteccion_estrabismo.backend.Entities.TipoDocumento;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.*;
+
+import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
 @Builder
@@ -10,13 +13,13 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 public class RegisterPacienteRequest extends RegisterRequest {
-    private String genero; // "Masculino", "Femenino", "Otro"
-    private String fotoPaciente; // imagen tomada para análisis de estrabismo
-    private String resultadoDeteccion; // "Normal", "Estrabismo leve", etc.
-    private String tipoEstrabismo; // opcional: exotropía, endotropía, etc.
-    private String observaciones; // anotaciones médicas
+    private String nombres;
+    private String apellidos;
+    private Integer documentoIdentidad;
+    private TipoDocumento tipoDocumento;
+    private Date fechaNacimiento;
+    private String genero;
     private Integer documentoIdentidadResponsable;
-    private String parentesco;
 
     @Override
     public Rol getRol() {

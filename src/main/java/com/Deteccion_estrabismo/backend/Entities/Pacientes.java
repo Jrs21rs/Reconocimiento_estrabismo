@@ -41,8 +41,6 @@ public class Pacientes {
     @JsonIgnore
     private Responsable responsable; // vínculo con el acudiente
 
-    @Column(length = 255)
-    private String fotoPaciente; // imagen tomada para análisis de estrabismo
     @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Evaluacion> evaluaciones = new ArrayList<>();
