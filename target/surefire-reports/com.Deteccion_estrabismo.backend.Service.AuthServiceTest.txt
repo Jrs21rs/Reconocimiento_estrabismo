@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.Deteccion_estrabismo.backend.Service.AuthServiceTest
--------------------------------------------------------------------------------
-Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.939 s -- in com.Deteccion_estrabismo.backend.Service.AuthServiceTest

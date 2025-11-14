@@ -1,5 +1,0 @@
-com\Deteccion_estrabismo\backend\BackendApplicationTests.class
-com\Deteccion_estrabismo\backend\Service\AuthServiceTest.class
-com\Deteccion_estrabismo\backend\Service\JwtServiceTest.class
-com\Deteccion_estrabismo\backend\Service\EvaluacionServiceTest.class
-com\Deteccion_estrabismo\backend\Service\SendGridEmailServiceTest.class
