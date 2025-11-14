@@ -39,3 +39,16 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+target/
+*.jar
+*.apk
+*.aab
+*.aar
+*.dex
+*.class
+*.jar
+*.apk
+*.aab
+*.aar
+*.dex
+*.class
