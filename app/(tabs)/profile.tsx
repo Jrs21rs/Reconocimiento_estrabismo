@@ -39,7 +39,7 @@ export default function ProfileScreen() {
           text: "Sí, cerrar sesión", 
           onPress: async () => {
             await logout();
-            router.replace("./index");
+            router.replace("/");
           }
         }
       ]

@@ -32,11 +32,44 @@ export default function RegisterScreen() {
     return edad;
   };
 
+  const validatePassword = (password: string) => {
+    const minLength = 8;
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumbers = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    
+    if (password.length < minLength) {
+      return { valid: false, message: 'La contraseña debe tener al menos 8 caracteres' };
+    }
+    if (!hasUpperCase) {
+      return { valid: false, message: 'La contraseña debe contener al menos una letra mayúscula' };
+    }
+    if (!hasLowerCase) {
+      return { valid: false, message: 'La contraseña debe contener al menos una letra minúscula' };
+    }
+    if (!hasNumbers) {
+      return { valid: false, message: 'La contraseña debe contener al menos un número' };
+    }
+    if (!hasSpecialChar) {
+      return { valid: false, message: 'La contraseña debe contener al menos un carácter especial (ej: !@#$%^&*)' };
+    }
+    
+    return { valid: true, message: '' };
+  };
+
   const handleRegister = async () => {
     try {
       // Validar todos los campos
       if (!tipoDocumento || !documentoIdentidad || !nombres || !apellidos || !fechaNacimiento || !correo || !password || !numeroTele) {
         Alert.alert("Error", "Por favor complete todos los campos");
+        return;
+      }
+
+      // Validar contraseña
+      const passwordValidation = validatePassword(password);
+      if (!passwordValidation.valid) {
+        Alert.alert("Error en la contraseña", passwordValidation.message);
         return;
       }
 
@@ -94,7 +127,7 @@ export default function RegisterScreen() {
 
       Alert.alert(
         "Registro exitoso",
-        "Tu cuenta ha sido creada correctamente",
+        "Tu cuenta ha sido creada correctamente, te hemos enviado un correo a tu cuenta para confirmar.",
         [
           {
             text: "OK",
@@ -183,7 +216,14 @@ export default function RegisterScreen() {
             onConfirm={(date) => {
               setMostrarDatePicker(false);
               const fechaFormateada = date.toISOString().split('T')[0];
-              setFechaNacimiento(fechaFormateada);
+              const edad = calcularEdad(fechaFormateada);
+              
+              if (edad < 18) {
+                Alert.alert("Error", "Debes ser mayor de 18 años para registrarte");
+                setFechaNacimiento("");
+              } else {
+                setFechaNacimiento(fechaFormateada);
+              }
             }}
             onCancel={() => setMostrarDatePicker(false)}
             maximumDate={new Date()}
@@ -202,15 +242,27 @@ export default function RegisterScreen() {
             autoCapitalize="none"
           />
           
-          <TextInput
-            style={styles.input}
-            placeholder="Contraseña"
-            placeholderTextColor="#666"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-            autoCapitalize="none"
-          />
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Contraseña"
+              placeholderTextColor="#666"
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+              autoCapitalize="none"
+            />
+            {password.length > 0 && (
+              <Text style={styles.passwordHint}>
+                {password.length < 8 ? 'Mínimo 8 caracteres' : 
+                 !/[A-Z]/.test(password) ? 'Incluye una mayúscula' :
+                 !/[a-z]/.test(password) ? 'Incluye una minúscula' :
+                 !/\d/.test(password) ? 'Incluye un número' :
+                 !/[!@#$%^&*(),.?":{}|<>]/.test(password) ? 'Incluye un carácter especial' :
+                 'Contraseña segura'}
+              </Text>
+            )}
+          </View>
 
           <TextInput
             style={styles.input}
@@ -370,6 +422,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   scrollContent: {
     flexGrow: 1,

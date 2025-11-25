@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Stack } from "expo-router";
-import { AuthProvider, useAuth } from "../services/authContext";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Stack } from "expo-router";
+import React, { useEffect, useState } from 'react';
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { AuthProvider, useAuth } from "../services/authContext";
 
 export default function Layout() {
   return (
