@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { Alert, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { PatientData, registerPatient } from '../../services/patientService';
 
 export default function PatientRegistrationForm() {
@@ -145,7 +145,7 @@ export default function PatientRegistrationForm() {
         <TextInput
           style={styles.input}
           value={formData.nombres}
-          onChangeText={(text) => handleChange('nombres', text.toUpperCase())}
+          onChangeText={(text) => handleChange('nombres', text)}
           placeholder="Nombres completos"
           autoCapitalize="words"
         />
@@ -156,7 +156,7 @@ export default function PatientRegistrationForm() {
         <TextInput
           style={styles.input}
           value={formData.apellidos}
-          onChangeText={(text) => handleChange('apellidos', text.toUpperCase())}
+          onChangeText={(text) => handleChange('apellidos', text)}
           placeholder="Apellidos completos"
           autoCapitalize="words"
         />
