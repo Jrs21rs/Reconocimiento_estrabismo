@@ -18,6 +18,7 @@ export default function RegisterScreen() {
   const [aceptaTerminos, setAceptaTerminos] = useState(false);
   const [mostrarTerminos, setMostrarTerminos] = useState(false);
   const [mostrarDatePicker, setMostrarDatePicker] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   
   const calcularEdad = (fechaNac: string) => {
     const hoy = new Date();
@@ -242,27 +243,35 @@ export default function RegisterScreen() {
             autoCapitalize="none"
           />
           
-          <View style={styles.passwordContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Contraseña"
-              placeholderTextColor="#666"
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
-              autoCapitalize="none"
-            />
-            {password.length > 0 && (
-              <Text style={styles.passwordHint}>
-                {password.length < 8 ? 'Mínimo 8 caracteres' : 
-                 !/[A-Z]/.test(password) ? 'Incluye una mayúscula' :
-                 !/[a-z]/.test(password) ? 'Incluye una minúscula' :
-                 !/\d/.test(password) ? 'Incluye un número' :
-                 !/[!@#$%^&*(),.?":{}|<>]/.test(password) ? 'Incluye un carácter especial' :
-                 'Contraseña segura'}
-              </Text>
-            )}
-          </View>
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={[styles.input, styles.passwordInput]}
+            placeholder="Contraseña"
+            placeholderTextColor="#666"
+            secureTextEntry={!showPassword}
+            value={password}
+            onChangeText={setPassword}
+            autoCapitalize="none"
+          />
+          <TouchableOpacity 
+            style={styles.showButton}
+            onPress={() => setShowPassword(!showPassword)}
+          >
+            <Text style={styles.showButtonText}>
+              {showPassword ? 'Ocultar' : 'Mostrar'}
+            </Text>
+          </TouchableOpacity>
+          {password.length > 0 && (
+            <Text style={styles.passwordHint}>
+              {password.length < 8 ? 'Mínimo 8 caracteres' : 
+              !/[A-Z]/.test(password) ? 'Incluye una mayúscula' :
+              !/[a-z]/.test(password) ? 'Incluye una minúscula' :
+              !/\d/.test(password) ? 'Incluye un número' :
+              !/[!@#$%^&*(),.?":{}|<>]/.test(password) ? 'Incluye un carácter especial' :
+              'Contraseña segura'}
+            </Text>
+          )}
+        </View>
 
           <TextInput
             style={styles.input}
@@ -500,4 +509,30 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
   },
+  passwordContainer: {
+  width: '100%',
+  marginBottom: 15,
+  position: 'relative',
+},
+passwordInput: {
+  paddingRight: 80, // Espacio para el botón de mostrar/ocultar
+},
+showButton: {
+  position: 'absolute',
+  right: 15,
+  top: 15,
+  padding: 5,
+  zIndex: 10,
+},
+showButtonText: {
+  color: '#4c669f',
+  fontWeight: 'bold',
+  fontSize: 14,
+},
+passwordHint: {
+  color: '#ffeb3b',
+  fontSize: 12,
+  marginTop: 4,
+  marginLeft: 10,
+},
 });

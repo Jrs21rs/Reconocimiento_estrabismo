@@ -9,6 +9,7 @@ export default function LoginScreen() {
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
     try {
@@ -35,7 +36,7 @@ export default function LoginScreen() {
 
       if (response.token) {
         await login(response.token);
-        Alert.alert("Login exitoso", "Has iniciado sesión correctamente");
+        Alert.alert("Login exitoso", "Has iniciado sesión correctamente! Si aún no tienes pacientes registrados, puedes agregarlos fácilmente desde la pestaña de 'Perfil'");
         router.replace("/(tabs)/home");
       } else {
         Alert.alert("Error", "Respuesta del servidor inválida");
@@ -63,16 +64,25 @@ export default function LoginScreen() {
           keyboardType="email-address"
           autoCapitalize="none"
         />
-        
+        <View style={styles.passwordContainer}>
         <TextInput
           style={styles.input}
           placeholder="Contraseña"
           placeholderTextColor="#666"
-          secureTextEntry
+          secureTextEntry={!showPassword}
           value={password}
           onChangeText={setPassword}
           autoCapitalize="none"
         />
+        <TouchableOpacity 
+                    style={styles.showButton}
+                    onPress={() => setShowPassword(!showPassword)}
+                  >
+                    <Text style={styles.showButtonText}>
+                      {showPassword ? 'Ocultar' : 'Mostrar'}
+                    </Text>
+                  </TouchableOpacity>
+        </View>
         
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Ingresar</Text>
@@ -135,8 +145,34 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   linkText: {
-    color: "#ffffff",
+    color: "#000000ff",
     textAlign: "center",
     fontSize: 16,
   },
+  passwordContainer: {
+  width: '100%',
+  marginBottom: 15,
+  position: 'relative',
+},
+passwordInput: {
+  paddingRight: 80, // Espacio para el botón de mostrar/ocultar
+},
+showButton: {
+  position: 'absolute',
+  right: 15,
+  top: 15,
+  padding: 5,
+  zIndex: 10,
+},
+showButtonText: {
+  color: '#4c669f',
+  fontWeight: 'bold',
+  fontSize: 14,
+},
+passwordHint: {
+  color: '#ffeb3b',
+  fontSize: 12,
+  marginTop: 4,
+  marginLeft: 10,
+},
 });
