@@ -10,6 +10,11 @@ interface UserData {
   apellidos: string;
   documentoIdentidad: string;
   tipoDocumento: string | null;
+  numeroTele?: string;
+  // Campos específicos de Responsable
+  parentesco?: string;
+  ocupacion?: string;
+  ciudadResidencia?: string;
   iat?: number;
   exp?: number;
   sub?: string;
@@ -20,6 +25,7 @@ interface AuthContextType {
   userData: UserData | null;
   login: (token: string) => Promise<void>;
   logout: () => Promise<void>;
+  updateToken: (token: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -64,8 +70,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsAuthenticated(false);
   };
 
+  const updateToken = async (token: string) => {
+    try {
+      const decoded = jwtDecode<UserData>(token);
+      await AsyncStorage.setItem('userToken', token);
+      setUserData(decoded);
+    } catch (error) {
+      console.error('Error al actualizar el token:', error);
+      throw error;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, userData, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, userData, login, logout, updateToken }}>
       {children}
     </AuthContext.Provider>
   );
