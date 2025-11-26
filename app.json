@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "myApp",
-    "slug": "myApp",
+    "name": "DetectEye",
+    "slug": "DetectEye",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "DetectEye",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -17,7 +17,7 @@
       "supportsTablet": true
     },
     "android": {
-      "package": "com.tudominio.myapp",
+      "package": "com.tudominio.detectEye",
       "versionCode": 1,
       "permissions": [],
       "adaptiveIcon": {
@@ -39,12 +39,12 @@
     "experiments": {
       "typedRoutes": true
     },
+    "owner": "valentinaneira",
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "4bbf9f1f-7c13-490e-aca9-e188e7fc347a"
+        "projectId": "5e44a01a-ae47-4e74-be0e-346bb9cd5f1f"
       }
-    },
-    "owner": "valentinaneira"
+    }
   }
 }
