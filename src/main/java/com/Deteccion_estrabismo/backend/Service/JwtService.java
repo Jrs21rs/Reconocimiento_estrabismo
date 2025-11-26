@@ -1,5 +1,6 @@
 package com.Deteccion_estrabismo.backend.Service;
 
+import com.Deteccion_estrabismo.backend.Entities.Responsable;
 import com.Deteccion_estrabismo.backend.Entities.Usuarios;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -54,12 +55,12 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    // 🔹 Generar token simple
+    // Generar token simple
     public String generateToken(Usuarios userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
 
-    // 🔹 Generar token con claims extra
+    // Generar token con claims extra
     public String generateToken(Map<String, Object> extraClaims, Usuarios userDetails) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", userDetails.getId());
@@ -70,6 +71,15 @@ public class JwtService {
         claims.put("documentoIdentidad", userDetails.getDocumentoIdentidad());
         claims.put("tipoDocumento",
                 userDetails.getTipoDocumento() != null ? userDetails.getTipoDocumento().name() : null);
+        claims.put("numeroTele", userDetails.getNumeroTele());
+
+        // Claims específicos de Responsable
+        if (userDetails instanceof Responsable) {
+            Responsable responsable = (Responsable) userDetails;
+            claims.put("parentesco", responsable.getParentesco());
+            claims.put("ocupacion", responsable.getOcupacion());
+            claims.put("ciudadResidencia", responsable.getCiudadResidencia());
+        }
 
         // Agregar claims adicionales si se proporcionan
         if (extraClaims != null) {
@@ -85,10 +95,10 @@ public class JwtService {
                 .compact();
     }
 
-    // 🔹 Validar token
+    // Validar token
     public boolean isTokenValid(String token, Usuarios userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        return (username.equals(userDetails.getCorreo())) && !isTokenExpired(token);
     }
 
 }
